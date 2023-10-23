@@ -41,6 +41,7 @@ else
     
     [Parameter]
     public int? CompetencyId { get; set; }
+
     [Parameter]
     public int? ExerciseId { get; set; }
 
@@ -61,7 +62,7 @@ else
         }
         else
         {
-            exercise = await ExerciseRepo.GetExerciseAsync((int)ExerciseId);
+            exercise = ExerciseRepo.GetExercise((int)ExerciseId);
         }
     }
 
@@ -69,22 +70,22 @@ else
     {
         if (exercise == null)
         {
-            NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}");
+            NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}",true);
         }
-        else if (exercise?.Id == 0)
+        else if (exercise?.Id == 0 && CompetencyId != null)
         {
-            await ExerciseRepo.AddExerciseAsync(exercise);
-            NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}");
+            ExerciseRepo.AddExercise(exercise, (int)CompetencyId);
+            NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}",true);
         }
         else
         {
-            await ExerciseRepo.UpdateExerciseAsync(exercise);
-            NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}");
+            ExerciseRepo.UpdateExercise(exercise);
+            NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}",true);
         }
     }
 
     protected void OnCancelClick()
     {
-        NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}");
+        NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}",true);
     }
 }

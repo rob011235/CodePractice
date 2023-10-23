@@ -4,10 +4,10 @@ namespace CodePractice.Data.Interfaces
 {
     public interface ICompetenciesRepo
     {
-        Task<IEnumerable<Competency>> GetCompetenciesAsync(int page, int number);
-        Task<Competency?> GetCompetencyAsync(int id);
-        Task<Competency?> UpdateCompetencyAsync(Competency competency);
-        Task<Competency> AddCompetencyAsync(Competency competency);
-        bool DeleteCompetencyAsync(int id);
+        IEnumerable<Competency> GetCompetencies(int page, int number);
+        Competency? GetCompetency(int id);
+        Competency? UpdateCompetency(Competency competency);
+        Competency AddCompetency(Competency competency);
+        bool DeleteCompetency(int id);
     }
 }

@@ -23,10 +23,10 @@
         Competency = new Competency();
     }
 
-    protected async override Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        await base.OnParametersSetAsync();
-        Competency = await repo.GetCompetencyAsync(Id);
+        base.OnParametersSet();
+        Competency = repo.GetCompetency(Id);
     }
 
 }

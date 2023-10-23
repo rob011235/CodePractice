@@ -5,51 +5,37 @@ namespace CodePractice.Data.Repos
 {
     public class ExerciseRepo : IExerciseRepo
     {
-        private readonly List<Exercise> exercises = new()
+        private readonly ApplicationDbContext _context; 
+        public ExerciseRepo(ApplicationDbContext context)
         {
-                new Exercise
-                {
-                    Id = 1,
-                    Title = "FizzBuzz",
-                    Question = "Write a program that prints the numbers from 1 to 100. But for multiples of three print “Fizz” instead of the number and for the multiples of five print “Buzz”. For numbers which are multiples of both three and five print “FizzBuzz”.",
-                    DesiredOutput = "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
-                    Answer = "public class FizzBuzz {\n\tpublic static void main(String[] args) {\n\t\tfor (int i = 1; i <= 100; i++) {\n\t\t\tif (i % 15 == 0) {\n\t\t\t\tSystem.out.println(\"FizzBuzz\");\n\t\t\t} else if (i % 3 == 0) {\n\t\t\t\tSystem.out.println(\"Fizz\");\n\t\t\t} else if (i % 5 == 0) {\n\t\t\t\tSystem.out.println(\"Buzz\");\n\t\t\t} else {\n\t\t\t\tSystem.out.println(i);\n\t\t\t}\n\t\t}\n\t}\n}",
-                    Hint = "Try using a for loop and if statements."
-                },
-                new Exercise
-                {
-                    Id = 2,
-                    Title = "Reverse a String",
-                    Question = "Write a function that reverses a string. The input string is given as an array of characters char[]. Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.",
-                    DesiredOutput = "olleh",
-                    Answer = "class Solution {\n\tpublic void reverseString(char[] s) {\n\t\tint i = 0;\n\t\tint j = s.length - 1;\n\t\twhile (i < j) {\n\t\t\tchar temp"
-                }
-            };
-
-        public ExerciseRepo()
-        {
-
-        }
-        public Task<Exercise?> GetExerciseAsync(int id)
-        {
-            return Task.FromResult(exercises.Where(e => e.Id == id).FirstOrDefault());
+            _context = context;
         }
 
-        public Task<IEnumerable<Exercise>> GetExercisesAsync(int page, int number)
+        public Exercise? GetExercise(int id)
         {
-            return Task.FromResult(exercises.Skip((page - 1) * number).Take(number));
+            return _context.Exercises.Where(e => e.Id == id).FirstOrDefault();
         }
 
-        public Task<Exercise> AddExerciseAsync(Exercise exercise)
+        public List<Exercise> GetExercises(int page, int number)
         {
-            exercise.Id = exercises.Max(e => e.Id) + 1;
-            exercises.Add(exercise);
-            return Task.FromResult(exercise);
+            return _context.Exercises.Skip((page - 1) * number).Take(number).ToList();
         }
 
-        public Task<Exercise?> UpdateExerciseAsync(Exercise exercise)
+        public Exercise AddExercise(Exercise exercise, int competencyId)
         {
-            var exerciseToUpdate = exercises.Where(e => e.Id == exercise.Id).FirstOrDefault();
+            var returnExercise = _context.Exercises.Add(exercise);
+            var competencyToUpdate = _context.Competencies.Where(e => e.Id == competencyId).FirstOrDefault();
+            if(competencyToUpdate != null)
+            {
+                competencyToUpdate.Exercises.Add(returnExercise.Entity);
+            }
+             _context.SaveChanges();
+            return returnExercise.Entity;
+        }
+
+        public Exercise? UpdateExercise(Exercise exercise)
+        {
+            var exerciseToUpdate = _context.Exercises.Where(e => e.Id == exercise.Id).FirstOrDefault();
             if (exerciseToUpdate != null)
             {
                 exerciseToUpdate.Title = exercise.Title;
@@ -58,15 +44,17 @@ namespace CodePractice.Data.Repos
                 exerciseToUpdate.Answer = exercise.Answer;
                 exerciseToUpdate.Hint = exercise.Hint;
             }
-            return Task.FromResult(exerciseToUpdate);
+            _context.SaveChanges();
+            return exerciseToUpdate;
         }
 
-        public bool DeleteExerciseAsync(int id)
+        public bool DeleteExercise(int id)
         {
-            var exerciseToDelete = exercises.Where(e => e.Id == id).FirstOrDefault();
+            var exerciseToDelete = _context.Exercises.Where(e => e.Id == id).FirstOrDefault();
             if (exerciseToDelete != null)
             {
-                exercises.Remove(exerciseToDelete);
+                _context.Exercises.Remove(exerciseToDelete);
+                _context.SaveChanges();
                 return true;
             }
             else

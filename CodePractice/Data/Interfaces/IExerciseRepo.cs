@@ -4,10 +4,10 @@ namespace CodePractice.Data.Interfaces
 {
     public interface IExerciseRepo
     {
-        Task<Exercise> AddExerciseAsync(Exercise exercise);
-        bool DeleteExerciseAsync(int id);
-        Task<Exercise?> GetExerciseAsync(int id);
-        Task<IEnumerable<Exercise>> GetExercisesAsync(int page, int number);
-        Task<Exercise?> UpdateExerciseAsync(Exercise exercise);
+        Exercise AddExercise(Exercise exercise, int competencyId);
+        bool DeleteExercise(int id);
+        Exercise? GetExercise(int id);
+        List<Exercise> GetExercises(int page, int number);
+        Exercise? UpdateExercise(Exercise exercise);
     }
 }

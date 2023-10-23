@@ -1,78 +1,55 @@
 ﻿using CodePractice.Data.Interfaces;
 using CodePractice.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CodePractice.Data.Repos
 {
     public class CompetenciesRepo : ICompetenciesRepo
-    {
-        private readonly List<Competency> competencies = new()
+    {      
+        private readonly ApplicationDbContext _context;
+        public CompetenciesRepo(ApplicationDbContext context)
         {
-                new Competency
-                {
-                    Id = 1,
-                     Description = "The ability to write code that is easy to understand and maintain.",
-                     Exercises = new List<Exercise>
-                     {
-                         new Exercise
-                         {
-                             Id = 1,
-                             Title = "FizzBuzz",
-                             Question = "Write a program that prints the numbers from 1 to 100. But for multiples of three print “Fizz” instead of the number and for the multiples of five print “Buzz”. For numbers which are multiples of both three and five print “FizzBuzz”.",
-                             DesiredOutput = "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
-                             Answer = "public class FizzBuzz {\n\tpublic static void main(String[] args) {\n\t\tfor (int i = 1; i <= 100; i++) {\n\t\t\tif (i % 15 == 0) {\n\t\t\t\tSystem.out.println(\"FizzBuzz\");\n\t\t\t} else if (i % 3 == 0) {\n\t\t\t\tSystem.out.println(\"Fizz\");\n\t\t\t} else if (i % 5 == 0) {\n\t\t\t\tSystem.out.println(\"Buzz\");\n\t\t\t} else {\n\t\t\t\tSystem.out.println(i);\n\t\t\t}\n\t\t}\n\t}\n}",
-                             Hint = "Try using a for loop and if statements."
-                         },
-                         new Exercise
-                         {
-                             Id = 2,
-                             Title = "Reverse a String",
-                             Question = "Write a function that reverses a string. The input string is given as an array of characters char[]. Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.",
-                             DesiredOutput = "olleh",
-                             Answer = "class Solution {\n\tpublic void reverseString(char[] s) {\n\t\tint i = 0;\n\t\tint j = s.length - 1;\n\t\twhile (i < j) {\n\t\t\tchar temp"
-                         }
-                     },
-                }
-            };
-
-        public CompetenciesRepo()
-        {
-
-        }
-        public Task<Competency?> GetCompetencyAsync(int id)
-        {
-            return Task.FromResult(competencies.Where(e => e.Id == id).FirstOrDefault());
+            _context = context; 
         }
 
-        public Task<IEnumerable<Competency>> GetCompetenciesAsync(int page, int number)
+        public Competency? GetCompetency(int id)
         {
-            return Task.FromResult(competencies.Skip((page - 1) * number).Take(number));
+            Competency? competency = _context.Competencies.Where(e => e.Id == id).Include(c=>c.Exercises).FirstOrDefault();
+            return competency;
         }
 
-        public Task<Competency> AddCompetencyAsync(Competency competency)
+        public IEnumerable<Competency> GetCompetencies(int page, int number)
         {
-            competency.Id = competencies.Max(e => e.Id) + 1;
-            competencies.Add(competency);
-            return Task.FromResult(competency);
+            return _context.Competencies.Skip((page - 1) * number).Take(number).Include(c=>c.Exercises);
         }
 
-        public Task<Competency?> UpdateCompetencyAsync(Competency competency)
+        public Competency AddCompetency(Competency competency)
         {
-            var competencyToUpdate = competencies.Where(e => e.Id == competency.Id).FirstOrDefault();
+            _context.Competencies.Add(competency);
+            _context.SaveChanges();
+            return competency;
+        }
+
+        public Competency? UpdateCompetency(Competency competency)
+        {
+            var competencyToUpdate = _context.Competencies.Where(e => e.Id == competency.Id).Include(c=>c.Exercises).FirstOrDefault();
             if (competencyToUpdate != null)
             {
                 competencyToUpdate.Title = competency.Title;
                 competencyToUpdate.Description = competency.Description;
                 competencyToUpdate.Exercises = competency.Exercises;
             }
-            return Task.FromResult(competencyToUpdate);
+            _context.SaveChanges();
+            return competencyToUpdate;
         }
 
-        public bool DeleteCompetencyAsync(int id)
+        public bool DeleteCompetency(int id)
         {
-            var exerciseToDelete = competencies.Where(e => e.Id == id).FirstOrDefault();
+            var exerciseToDelete = _context.Competencies.Where(e => e.Id == id).FirstOrDefault();
             if (exerciseToDelete != null)
             {
-                competencies.Remove(exerciseToDelete);
+                _context.Competencies.Remove(exerciseToDelete);
+                _context.SaveChanges();
                 return true;
             }
             else

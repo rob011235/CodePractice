@@ -38,8 +38,8 @@ else
                     {
                         <tr>
                             <td>@exercise.Title</td>
-                            <td><button class="btn btn-sm btn-primary" @onclick="()=>OnEditExerciseClickAsync(exercise.Id)">Edit</button></td>
-                            <td><button class="btn btn-sm btn-danger" @onclidk="()=>OnDeleteClick(excercise.Id)">Delete</button></td>
+                            <td><button class="btn btn-sm btn-primary" @onclick="()=>OnEditExerciseClick(exercise.Id)">Edit</button></td>
+                            <td><button class="btn btn-sm btn-danger" @onclick="()=>OnDeleteClick(exercise.Id)">Delete</button></td>
                         </tr>
                     }
                 </tbody>
@@ -47,7 +47,7 @@ else
         }
     </div>
     <div class="form-group">
-        <button class="btn btn-primary" @onclick="@OnAddExerciseClickAsync">Add Exercise</button>
+        <button class="btn btn-primary" @onclick="@OnAddExerciseClick">Add Exercise</button>
     </div>
 
     @if (showModal)
@@ -92,40 +92,41 @@ else
     override protected void OnInitialized()
     {
     }
-
-    protected async override Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        await base.OnParametersSetAsync();
+        base.OnParametersSet();
         if (Id == null)
         {
             Competency = new Competency();
         }
         else
         {
-            Competency = await repo.GetCompetencyAsync((int)Id);
+            Competency = repo.GetCompetency((int)Id);
         }
     }
 
-    public async Task OnAddExerciseClickAsync()
+    public void OnAddExerciseClick()
     {
         if (Competency?.Id == 0)
         {
-            Competency = await repo.AddCompetencyAsync(Competency);
+            Competency = repo.AddCompetency(Competency);
         }
         NavigationManager.NavigateTo($"ExerciseEdit/{Competency?.Id}");
     }
 
-    public async Task OnEditExerciseClickAsync(int exerciseId)
+    public void OnEditExerciseClick(int exerciseId)
     {
         NavigationManager.NavigateTo($"ExerciseEdit/{Competency?.Id}/{exerciseId}");
     }
 
-    public void OnDeleteExerciseClick(int exerciseId)
+    public void OnDeleteClick(int exerciseId)
     {
         ExerciseId = exerciseId;    
         showModal = true;
     }
+
     void ModalCancel() => showModal = false;
+
     void ModalConfirmDelete()
     {
         Competency.Exercises = Competency.Exercises.Where(e => e.Id != ExerciseId).ToList();

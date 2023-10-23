@@ -28,8 +28,8 @@ namespace CodePractice
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             builder.Services.AddSingleton<WeatherForecastService>();
-            builder.Services.AddSingleton<IExerciseRepo,ExerciseRepo>();
-            builder.Services.AddSingleton<ICompetenciesRepo,CompetenciesRepo>();
+            builder.Services.AddTransient<IExerciseRepo,ExerciseRepo>();
+            builder.Services.AddTransient<ICompetenciesRepo,CompetenciesRepo>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -11,8 +11,8 @@ namespace CodePractice.Data
         {
         }
 
-        DbSet<Exercise> Exercises { get; set; } 
-        DbSet<Competency> Competencies { get; set; }
-        DbSet<Submission> Submissions { get; set; }
+        public DbSet<Exercise> Exercises { get; set; } 
+        public DbSet<Competency> Competencies { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
     }
 }
