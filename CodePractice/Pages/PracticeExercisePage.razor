@@ -1,0 +1,27 @@
+﻿@page "/exercise/{id:int}"
+@inject IExerciseRepo repo;
+
+<h3>@exercise.Title</h3>
+
+<p>@exercise.Question</p>
+
+<p>@exercise.DesiredOutput</p>
+
+<p>@exercise.Answer</p> 
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public Exercise? exercise { get; set; }
+    string SubmittedFileName { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        exercise = new Exercise();  
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        exercise = await repo.GetExerciseAsync(Id);
+    }
+}
