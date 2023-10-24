@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodePractice.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231022192019_ChangeNameToTitleInCompetency")]
-    partial class ChangeNameToTitleInCompetency
+    [Migration("20231024174130_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,7 +58,7 @@ namespace CodePractice.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompetencyId")
+                    b.Property<int>("CompetencyId")
                         .HasColumnType("int");
 
                     b.Property<string>("DesiredOutput")
@@ -326,9 +326,13 @@ namespace CodePractice.Data.Migrations
 
             modelBuilder.Entity("CodePractice.Data.Models.Exercise", b =>
                 {
-                    b.HasOne("CodePractice.Data.Models.Competency", null)
+                    b.HasOne("CodePractice.Data.Models.Competency", "Competency")
                         .WithMany("Exercises")
-                        .HasForeignKey("CompetencyId");
+                        .HasForeignKey("CompetencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competency");
                 });
 
             modelBuilder.Entity("CodePractice.Data.Models.Submission", b =>

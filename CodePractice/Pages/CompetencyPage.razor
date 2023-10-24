@@ -1,16 +1,17 @@
 ﻿@page "/Competency/{Id:int}"
 @inject ICompetenciesRepo repo
 <h3>Competency</h3>
-        <div class="form-group">
-            <label for="title">Title</label>
-        <InputText class="form-control" id="title" aria-describedby="title" placeholder="Enter title" @bind-Value="Competency.Title" />
-            <small id="titleHelp" class="form-text text-muted">Please enter a title for this competency.</small>
-    </div>
-    <div class="form-group">
-        <label for="description">Description</label>
-        <InputTextArea class="form-control" id="description" aria-describedby="description" placeholder="Enter description" @bind-Value="Competency.Description" />
-        <small id="competencyHelp" class="form-text text-muted">Please enter a description for this competency.</small>
-    </div>
+<h4>@Competency.Title</h4>
+<p>@Competency.Description</p>
+
+<h5>Excercises</h5>
+<ul>
+    @foreach (Exercise exercise in Competency.Exercises)
+    {
+        <li><a href="exercise/@exercise.Id">@exercise.Title</a></li>
+    }
+</ul>
+
 
 @code {
     [Parameter]
@@ -28,5 +29,4 @@
         base.OnParametersSet();
         Competency = repo.GetCompetency(Id);
     }
-
 }

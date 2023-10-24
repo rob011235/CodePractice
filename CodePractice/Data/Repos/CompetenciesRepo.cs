@@ -18,9 +18,9 @@ namespace CodePractice.Data.Repos
             return competency;
         }
 
-        public IEnumerable<Competency> GetCompetencies(int page, int number)
+        public List<Competency> GetCompetencies(int page, int number)
         {
-            return _context.Competencies.Skip((page - 1) * number).Take(number).Include(c=>c.Exercises);
+            return _context.Competencies.Skip((page - 1) * number).Take(number).Include(c=>c.Exercises).ToList();
         }
 
         public Competency AddCompetency(Competency competency)

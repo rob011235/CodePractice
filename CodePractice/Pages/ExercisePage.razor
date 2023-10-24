@@ -1,6 +1,6 @@
 ﻿@page "/exercise/{id:int}"
 @inject IExerciseRepo repo;
-
+@inject NavigationManager NavigationManager;
 @if(exercise == null)
 {
     <p><em>Loading...</em></p>
@@ -8,12 +8,17 @@
 else{
 
     <h3>@exercise.Title</h3>
-
+    <h4>Question</h4>
     <p>@exercise.Question</p>
-
+    <h4>Desired Output</h4>
     <p>@exercise.DesiredOutput</p>
-
+    <h4>Answer</h4>
     <p>@exercise.Answer</p>
+    <div class="form-group">
+        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-danger" @onclick="OnCancelClick">Cancel   </button>
+    </div>
+
 }
 @code {
     [Parameter]
@@ -26,4 +31,11 @@ else{
         base.OnParametersSet();
         exercise = repo.GetExercise(Id);
     }
+
+    private void OnCancelClick()
+    {
+        NavigationManager.NavigateTo($"competency/{exercise.Competency.Id}");
+    }
+
+    
 }

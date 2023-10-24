@@ -40,7 +40,7 @@ namespace CodePractice.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Competencies", (string)null);
+                    b.ToTable("Competencies");
                 });
 
             modelBuilder.Entity("CodePractice.Data.Models.Exercise", b =>
@@ -55,7 +55,7 @@ namespace CodePractice.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompetencyId")
+                    b.Property<int>("CompetencyId")
                         .HasColumnType("int");
 
                     b.Property<string>("DesiredOutput")
@@ -78,7 +78,7 @@ namespace CodePractice.Data.Migrations
 
                     b.HasIndex("CompetencyId");
 
-                    b.ToTable("Exercises", (string)null);
+                    b.ToTable("Exercises");
                 });
 
             modelBuilder.Entity("CodePractice.Data.Models.Submission", b =>
@@ -116,7 +116,7 @@ namespace CodePractice.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Submissions", (string)null);
+                    b.ToTable("Submissions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -323,9 +323,13 @@ namespace CodePractice.Data.Migrations
 
             modelBuilder.Entity("CodePractice.Data.Models.Exercise", b =>
                 {
-                    b.HasOne("CodePractice.Data.Models.Competency", null)
+                    b.HasOne("CodePractice.Data.Models.Competency", "Competency")
                         .WithMany("Exercises")
-                        .HasForeignKey("CompetencyId");
+                        .HasForeignKey("CompetencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competency");
                 });
 
             modelBuilder.Entity("CodePractice.Data.Models.Submission", b =>

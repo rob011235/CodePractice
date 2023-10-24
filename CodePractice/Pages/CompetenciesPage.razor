@@ -1,0 +1,24 @@
+﻿@page "/Competencies"
+@inject NavigationManager NavigationManager
+@inject ICompetenciesRepo Repo
+
+<h3>Competencies</h3>
+
+@foreach (var competency in Competencies)
+    {
+    <p><a href="/Competency/@competency.Id">@competency.Title</a></p>
+    }
+
+@code {
+
+    int page = 1;
+    int numPerPage = 10;
+    public List<Competency> Competencies { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Competencies = Repo.GetCompetencies(page,numPerPage);
+    }   
+
+}

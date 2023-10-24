@@ -8,5 +8,7 @@
         public string DesiredOutput { get; set; } = "";
         public string Answer { get; set; } = "";
         public string Hint { get; set; } = "";
+        public int CompetencyId { get; set; }
+        public virtual Competency Competency { get; set; }
     }
 }
