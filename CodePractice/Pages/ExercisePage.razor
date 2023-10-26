@@ -12,11 +12,30 @@ else{
     <p>@exercise.Question</p>
     <h4>Desired Output</h4>
     <p>@exercise.DesiredOutput</p>
-    <h4>Answer</h4>
-    <p>@exercise.Answer</p>
+    <h4>Submission Comments</h4>
+    <InputTextArea @bind-Value = "submission.StudentComments"/>
+    <h4>Upload code</h4>
+    @if(!showAnswer)
+    {
+       <InputFile OnChange="OnFileChange" />
+    }
+    <p>@SubmittedFileName</p>
+
+    @if(showAnswer)
+    {
+        <h4>Answer</h4>
+        <p>@exercise.Answer</p>
+    }
+    else
+    {
+        <div class="form-group">
+            <button class="btn btn-primary" @onclick="OnShowAnswerClick">Submit Program and Show Answer</button>
+            <button class="btn btn-danger" @onclick="OnReturnClick">Cancel   </button>
+        </div>
+    }
+
     <div class="form-group">
-        <button class="btn btn-primary">Submit</button>
-        <button class="btn btn-danger" @onclick="OnCancelClick">Cancel   </button>
+        <button class="btn btn-primary"@onclick="OnReturnClick">Return to competency page</button>
     </div>
 
 }
@@ -24,7 +43,9 @@ else{
     [Parameter]
     public int Id { get; set; }
     public Exercise? exercise { get; set; }
+    public Submission? submission { get; set; } = new Submission();
     string SubmittedFileName { get; set; }
+    bool showAnswer = false;
 
     protected override void OnParametersSet()
     {
@@ -32,10 +53,18 @@ else{
         exercise = repo.GetExercise(Id);
     }
 
-    private void OnCancelClick()
+    private void OnReturnClick()
     {
         NavigationManager.NavigateTo($"competency/{exercise.Competency.Id}");
     }
 
-    
+    private void OnShowAnswerClick()
+    {
+        showAnswer = true;
+    }
+    private void OnFileChange(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        SubmittedFileName = file.Name;
+    }
 }
