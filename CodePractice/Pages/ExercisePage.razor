@@ -1,11 +1,12 @@
 ﻿@page "/exercise/{id:int}"
 @inject IExerciseRepo repo;
 @inject NavigationManager NavigationManager;
-@if(exercise == null)
+@if (exercise == null)
 {
     <p><em>Loading...</em></p>
 }
-else{
+else
+{
 
     <h3>@exercise.Title</h3>
     <h4>Question</h4>
@@ -13,18 +14,23 @@ else{
     <h4>Desired Output</h4>
     <p>@exercise.DesiredOutput</p>
     <h4>Submission Comments</h4>
-    <InputTextArea @bind-Value = "submission.StudentComments"/>
+    <InputTextArea class="form-control" @bind-Value="submission.StudentComments" />
     <h4>Upload code</h4>
-    @if(!showAnswer)
+    @if (!showAnswer)
     {
-       <InputFile OnChange="OnFileChange" />
+        <InputFile class="form-control"  OnChange="OnFileChange" />
     }
     <p>@SubmittedFileName</p>
 
-    @if(showAnswer)
+    @if (showAnswer)
     {
-        <h4>Answer</h4>
-        <p>@exercise.Answer</p>
+        <div class="form-group">
+            <h4>Answer</h4>
+            <p>@exercise.Answer</p>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" @onclick="OnReturnClick">Return to competency page</button>
+        </div>
     }
     else
     {
@@ -34,9 +40,7 @@ else{
         </div>
     }
 
-    <div class="form-group">
-        <button class="btn btn-primary"@onclick="OnReturnClick">Return to competency page</button>
-    </div>
+
 
 }
 @code {
