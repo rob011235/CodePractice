@@ -36,20 +36,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcGV0ZW5jeVBhZ2UucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rgarn/source/repos/CodePractice/CodePractice/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/rgarn/source/repos/CodePractice/CodePractice/Pages/ExerciseEditPage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhlcmNpc2VFZGl0UGFnZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/rgarn/source/repos/CodePractice/CodePractice/Pages/ExercisePage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhlcmNpc2VQYWdlLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/rgarn/source/repos/CodePractice/CodePractice/Pages/FetchData.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmV0Y2hEYXRhLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/rgarn/source/repos/CodePractice/CodePractice/Pages/Index.razor]
