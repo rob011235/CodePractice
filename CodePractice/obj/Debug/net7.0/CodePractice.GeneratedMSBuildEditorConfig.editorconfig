@@ -56,6 +56,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/rgarn/source/repos/CodePractice/CodePractice/Pages/RichTextEditor.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmljaFRleHRFZGl0b3IucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/rgarn/source/repos/CodePractice/CodePractice/Shared/LoginDisplay.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luRGlzcGxheS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 

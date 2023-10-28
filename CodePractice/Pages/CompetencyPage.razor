@@ -2,7 +2,7 @@
 @inject ICompetenciesRepo repo
 <h3>Competency</h3>
 <h4>@Competency.Title</h4>
-<p>@Competency.Description</p>
+<p>@((MarkupString)Competency.Description)</p>
 
 <h5>Excercises</h5>
 <ul>

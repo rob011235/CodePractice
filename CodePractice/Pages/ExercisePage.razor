@@ -9,12 +9,11 @@ else
 {
 
     <h3>@exercise.Title</h3>
-    <h4>Question</h4>
-    <p>@exercise.Question</p>
+    <h4>Coding problem</h4>
+    <p>@((MarkupString)exercise.Question)</p>
     <h4>Desired Output</h4>
-    <p>@exercise.DesiredOutput</p>
-    <h4>Submission Comments</h4>
-    <InputTextArea class="form-control" @bind-Value="submission.StudentComments" />
+    <p>@((MarkupString)exercise.DesiredOutput)</p>
+   
     <h4>Upload code</h4>
     @if (!showAnswer)
     {
@@ -22,11 +21,13 @@ else
     }
     <p>@SubmittedFileName</p>
 
+    <h4>Submission Comments</h4>
+    <InputTextArea class="form-control" @bind-Value="submission.StudentComments" />
     @if (showAnswer)
     {
         <div class="form-group">
             <h4>Answer</h4>
-            <p>@exercise.Answer</p>
+            <p>@((MarkupString)@exercise.Answer)</p>
         </div>
         <div class="form-group">
             <button class="btn btn-primary" @onclick="OnReturnClick">Return to competency page</button>
