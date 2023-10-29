@@ -1,6 +1,7 @@
 using CodePractice.Areas.Identity;
 using CodePractice.Data;
 using CodePractice.Data.Interfaces;
+using CodePractice.Data.Models;
 using CodePractice.Data.Repos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -23,12 +24,20 @@ namespace CodePractice
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+
+
+
+
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            builder.Services.AddTransient<IExerciseRepo,ExerciseRepo>();
-            builder.Services.AddTransient<ICompetenciesRepo,CompetenciesRepo>();
+            builder.Services.AddTransient<IExerciseRepo, ExerciseRepo>();
+            builder.Services.AddTransient<ICompetenciesRepo, CompetenciesRepo>();
+            builder.Services.AddTransient<IInstructorsRepo, InstructorsRepo>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

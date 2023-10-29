@@ -25,4 +25,36 @@ htmlcov/
 .coverage
 .coverage.*
 *,cover
+<<<<<<< HEAD
 /.vs/CodePractice/FileContentIndex
+=======
+/.vs/CodePractice/v17/.suo
+>>>>>>> dev
+/.vs/CodePractice/FileContentIndex/19af8a94-3cae-44c8-9544-c33da648bbd9.vsidx
+/.vs/CodePractice/FileContentIndex/4220d858-d805-4882-bd73-deebcbb32692.vsidx
+/.vs/CodePractice/FileContentIndex/4530a012-25c1-481a-93db-5bd2a3ca7ef6.vsidx
+/.vs/CodePractice/FileContentIndex/477461b5-a3f6-40da-a148-2544b0d80f3f.vsidx
+/.vs/CodePractice/FileContentIndex/4838b7f7-afd3-4caa-81d2-dfc748c01fe4.vsidx
+/.vs/CodePractice/FileContentIndex/56523044-bea7-4faa-82f9-bcefe49ae4f5.vsidx
+/.vs/CodePractice/FileContentIndex/654ac45f-0dce-491f-8fb5-69de308b0188.vsidx
+/.vs/CodePractice/FileContentIndex/7986ed14-7158-4443-afd7-09c21e98395c.vsidx
+/.vs/CodePractice/FileContentIndex/997118fa-f7e7-4feb-ba1f-2be69f8170b2.vsidx
+/.vs/CodePractice/FileContentIndex/a21e5948-f6e9-42c1-911e-92dd02fc76e8.vsidx
+/.vs/CodePractice/FileContentIndex/ae15d7db-001f-4446-9741-6509a3f917ec.vsidx
+/.vs/CodePractice/FileContentIndex/b0b14c3c-c627-4d2d-a2d3-89669e7dea5c.vsidx
+/.vs/CodePractice/FileContentIndex/b62cb4a1-3628-4fbe-bf98-56f5a02d9d12.vsidx
+/.vs/CodePractice/FileContentIndex/cc73edc4-e05c-4c89-9355-df59452820f1.vsidx
+/.vs/CodePractice/DesignTimeBuild/.dtbcache.v2
+/.vs/CodePractice/v17/.futdcache.v2
+/.vs/CodePractice/v17/HierarchyCache.v1.txt
+/.vs/ProjectEvaluation/codepractice.metadata.v7.bin
+/.vs/ProjectEvaluation/codepractice.projects.v7.bin
+/CodePractice/bin/Debug/net7.0/CodePractice.dll
+/CodePractice/bin/Debug/net7.0/CodePractice.pdb
+/CodePractice/obj/Debug/net7.0/ref/CodePractice.dll
+/CodePractice/obj/Debug/net7.0/refint/CodePractice.dll
+/CodePractice/obj/Debug/net7.0/CodePractice.csproj.CoreCompileInputs.cache
+/CodePractice/obj/Debug/net7.0/CodePractice.dll
+/CodePractice/obj/Debug/net7.0/CodePractice.GeneratedMSBuildEditorConfig.editorconfig
+/CodePractice/obj/Debug/net7.0/CodePractice.pdb
+/CodePractice/obj/Debug/net7.0/project.razor.vs.json
