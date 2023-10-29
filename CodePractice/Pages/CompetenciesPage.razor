@@ -2,23 +2,137 @@
 @inject NavigationManager NavigationManager
 @inject ICompetenciesRepo Repo
 
-<h3>Competencies</h3>
-
-@foreach (var competency in Competencies)
+<h3>
+    Competencies
+    <AuthorizeView Roles="Admin, Instructor">
+        <Authorized>
+            @if (isInEditMode)
+            {
+                <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=false">Exit Edit Mode</button>
+            }
+            else
+            {
+                <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=true">Edit Mode</button>
+            }
+        </Authorized>
+    </AuthorizeView>
+</h3>
+@if (isInEditMode)
+{
+    @if (competencies == null)
     {
-    <p><a href="/Competency/@competency.Id">@competency.Title</a></p>
+        <p><em>Loading...</em></p>
     }
+    else
+    {
+        <div class="form-group">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Competency</th>
+                        <th>Number of exercises</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var competency in competencies)
+                    {
+                        <tr>
+                            <td>@competency.Title</td>
+                            <td>@competency.Exercises.Count</td>
+                            <td><button class="btn btn-sm btn-primary" @onclick="()=>OnEditClick(competency.Id)">Edit</button><button class="btn btn-sm btn-danger" @onclick="()=>OnDeleteClick(competency.Id)">Delete</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-sm btn-primary" @onclick="@OnAddCompetencyClick">Add Competency</button>
+        </div>
+
+        @if (showModal)
+        {
+            <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Confirm action</h4>
+                            <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete?</p>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
+                            <button type="button" class="btn btn-danger" @onclick=@ModalConfirmDelete>Delete</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+else
+{
+    @if (competencies == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <button class="btn btn-primary" @onclick="()=>page++">Next</button>
+        <button class="btn btn-primary" @onclick="()=>page--">Previous</button>
+
+        @foreach (var competency in competencies)
+        {
+            <p><a href="/Competency/@competency.Id">@competency.Title</a></p>
+        }
+    }
+}
 
 @code {
-
+    bool isInEditMode = false;
+    List<Competency>? competencies = null;
+    int ExerciseId;
+    bool showModal = false;
     int page = 1;
     int numPerPage = 10;
-    public List<Competency> Competencies { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Competencies = Repo.GetCompetencies(page,numPerPage);
-    }   
+        competencies = Repo.GetCompetencies(page, numPerPage);
+    }
 
+    public void OnEditClick(int competencyId)
+    {
+        NavigationManager.NavigateTo($"CompetencyEdit/{competencyId}");
+    }
+
+    public void OnDeleteClick(int competencyId)
+    {
+        ExerciseId = competencyId;
+        showModal = true;
+    }
+
+    void ModalCancel() => showModal = false;
+
+    void ModalConfirmDelete()
+    {
+        Repo.DeleteCompetency(ExerciseId);
+        competencies.Remove(competencies.Where(c => c.Id == ExerciseId).FirstOrDefault());
+        showModal = false;
+    }
+
+    public void OnAddCompetencyClick()
+    {
+        NavigationManager.NavigateTo($"CompetencyEdit");
+    }
 }
