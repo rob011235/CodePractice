@@ -10,11 +10,15 @@ else
 
     <h3>@exercise.Title</h3>
     <h4>Coding problem</h4>
+    <small class="form-text text-muted">Solve this problem with your code.</small>
     <p>@((MarkupString)exercise.Question)</p>
     <h4>Desired Output</h4>
+    <small class="form-text text-muted">You program should display the folloiwng output.</small>
     <p>@((MarkupString)exercise.DesiredOutput)</p>
    
     <h4>Upload code</h4>
+
+    <small class="form-text text-muted">Once your program solves the problem and shows the desired output, upload it here for you instructor to look at latter.</small>
     @if (!showAnswer)
     {
         <InputFile class="form-control"  OnChange="OnFileChange" />
@@ -22,15 +26,18 @@ else
     <p>@SubmittedFileName</p>
 
     <h4>Submission Comments</h4>
+    <small class="form-text text-muted">Enter any comments or questions you want your instructor to see here.</small>
     <InputTextArea class="form-control" @bind-Value="submission.StudentComments" />
     @if (showAnswer)
     {
         <div class="form-group">
             <h4>Answer</h4>
+            <small class="form-text text-muted">Once you see the answer you can't make any more submissions on this problem but don't worry! You can just try another problem until you get it right.</small>
             <p>@((MarkupString)@exercise.Answer)</p>
         </div>
         <div class="form-group">
             <button class="btn btn-primary" @onclick="OnReturnClick">Return to competency page</button>
+            <button class="btn btn-primary" @onclick="OnGetNextProblem">Try another problem</button>
         </div>
     }
     else
@@ -40,9 +47,6 @@ else
             <button class="btn btn-danger" @onclick="OnReturnClick">Cancel   </button>
         </div>
     }
-
-
-
 }
 @code {
     [Parameter]
@@ -71,5 +75,18 @@ else
     {
         var file = e.File;
         SubmittedFileName = file.Name;
+    }
+
+    private void OnGetNextProblem()
+    {
+        // var nextExercise = repo.GetNextExercise(exercise);
+        // if (nextExercise == null)
+        // {
+        //     NavigationManager.NavigateTo($"competency/{exercise.Competency.Id}");
+        // }
+        // else
+        // {
+        //     NavigationManager.NavigateTo($"exercise/{nextExercise.Id}");
+        // }
     }
 }

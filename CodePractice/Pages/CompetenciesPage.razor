@@ -4,7 +4,7 @@
 
 <h3>
     Competencies
-    <AuthorizeView Roles="Admin, Instructor">
+    <AuthorizeView Roles="Admin">
         <Authorized>
             @if (isInEditMode)
             {
@@ -17,85 +17,76 @@
         </Authorized>
     </AuthorizeView>
 </h3>
-@if (isInEditMode)
+
+@if (competencies == null)
 {
-    @if (competencies == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <div class="form-group">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Competency</th>
-                        <th>Number of exercises</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var competency in competencies)
-                    {
-                        <tr>
-                            <td>@competency.Title</td>
-                            <td>@competency.Exercises.Count</td>
-                            <td><button class="btn btn-sm btn-primary" @onclick="()=>OnEditClick(competency.Id)">Edit</button><button class="btn btn-sm btn-danger" @onclick="()=>OnDeleteClick(competency.Id)">Delete</button></td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-sm btn-primary" @onclick="@OnAddCompetencyClick">Add Competency</button>
-        </div>
-
-        @if (showModal)
-        {
-            <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">Confirm action</h4>
-                            <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
-                        </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                            <p>Are you sure you want to delete?</p>
-                        </div>
-
-                        <!-- Modal footer -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
-                            <button type="button" class="btn btn-danger" @onclick=@ModalConfirmDelete>Delete</button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        }
-    }
+    <p><em>Loading...</em></p>
 }
 else
 {
-    @if (competencies == null)
+    <button class="btn btn-primary" @onclick="()=>page++">Next</button>
+    <button class="btn btn-primary" @onclick="()=>page--">Previous</button>
+    <div class="form-group">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Competency</th>
+                    <th>Number of exercises</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var competency in competencies)
+                {
+                    <tr>
+                        <td><a href="/Competency/@competency.Id">@competency.Title</a></td>
+                        <td>@competency.Exercises.Count</td>
+                        @if (isInEditMode)
+                        {
+                            <td><button class="btn btn-sm btn-primary" @onclick="()=>OnEditClick(competency.Id)">Edit</button><button class="btn btn-sm btn-danger" @onclick="()=>OnDeleteClick(competency.Id)">Delete</button></td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (isInEditMode)
     {
-        <p><em>Loading...</em></p>
+        <div class="form-group">
+            <button class="btn btn-sm btn-primary" @onclick="@OnAddCompetencyClick">Add Competency</button>
+        </div>
     }
-    else
-    {
-        <button class="btn btn-primary" @onclick="()=>page++">Next</button>
-        <button class="btn btn-primary" @onclick="()=>page--">Previous</button>
 
-        @foreach (var competency in competencies)
-        {
-            <p><a href="/Competency/@competency.Id">@competency.Title</a></p>
-        }
+    @if (showModal)
+    {
+        <div class="modal fade show" id="myModal" style="display:block" aria-modal="true" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Confirm action</h4>
+                        <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete?</p>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn" @onclick="@ModalCancel">Cancel</button>
+                        <button type="button" class="btn btn-danger" @onclick=@ModalConfirmDelete>Delete</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     }
 }
+
+
 
 @code {
     bool isInEditMode = false;

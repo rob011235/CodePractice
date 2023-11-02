@@ -21,6 +21,11 @@ namespace CodePractice.Data.Repos
             return _context.Exercises.Skip((page - 1) * number).Take(number).ToList();
         }
 
+        //public Exercise GetNextExercise(Exercise exercise)
+        //{
+
+        //}
+
         public Exercise AddExercise(Exercise exercise, int competencyId)
         {
             var returnExercise = _context.Exercises.Add(exercise);
