@@ -22,7 +22,7 @@ else
         <small id="competencyHelp" class="form-text text-muted">Please enter a description for this competency.</small>
     </div>
     <div class="form-group">
-        @if (Competency.Exercises?.Count() > 0)
+        @if (Exercises?.Count() > 0)
         {
 
             <table class="table">
@@ -33,7 +33,7 @@ else
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var exercise in Competency.Exercises)
+                    @foreach (var exercise in Exercises)
                     {
                         <tr>
                             <td>@exercise.Title</td>
@@ -94,6 +94,8 @@ else
 
     public Competency? Competency { get; set; }
 
+    public List<Exercise>? Exercises { get; set; } = new List<Exercise>();
+
     override protected void OnInitialized()
     {
     }
@@ -138,7 +140,7 @@ else
 
     void ModalConfirmDelete()
     {
-        Competency.Exercises = Competency.Exercises.Where(e => e.Id != ExerciseId).ToList();
+        //TODO: Delete exercise 
         
         showModal = false;
     }

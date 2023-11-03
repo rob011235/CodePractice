@@ -1,16 +1,24 @@
 ﻿@page "/Competency/{Id:int}"
 @inject ICompetenciesRepo repo
 <h3>Competency</h3>
-<h4>@Competency.Title</h4>
+<h4>@Competency?.Title</h4>
 <p>@((MarkupString)Competency.Description)</p>
 
-<h5>Excercises</h5>
-<ul>
-    @foreach (Exercise exercise in Competency.Exercises)
+<h5>Exercises</h5>
+@if(exercise != null)
+{
+    <a class="btn btn-primary" href="exercise/@exercise.Id">Try exercise</a>
+}
+else
+{
+    <p>No exercises found</p>
+}
+@* <ul>
+    @foreach (Exercise exercise in Exercises)
     {
         <li><a href="exercise/@exercise.Id">@exercise.Title</a></li>
-    }
-</ul>
+    }    
+</ul> *@
 
 
 @code {
@@ -18,6 +26,10 @@
     public int Id { get; set; }
 
     public Competency? Competency { get; set; }
+
+    public List<Exercise> Exercises { get; set; } = new List<Exercise>();
+
+    private Exercise? exercise;
 
     override protected void OnInitialized()
     {
@@ -28,5 +40,6 @@
     {
         base.OnParametersSet();
         Competency = repo.GetCompetency(Id);
+        exercise = repo.GetFirstExercise(Competency.Id);
     }
 }

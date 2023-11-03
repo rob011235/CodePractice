@@ -5,7 +5,7 @@ namespace CodePractice.Data.Repos
 {
     public class ExerciseRepo : IExerciseRepo
     {
-        private readonly ApplicationDbContext _context; 
+        private readonly ApplicationDbContext _context;
         public ExerciseRepo(ApplicationDbContext context)
         {
             _context = context;
@@ -14,7 +14,6 @@ namespace CodePractice.Data.Repos
         public Exercise? GetExercise(int id)
         {
             return _context.Exercises.Where(e => e.Id == id).FirstOrDefault();
-
         }
 
         public List<Exercise> GetExercises(int page, int number)
@@ -22,28 +21,19 @@ namespace CodePractice.Data.Repos
             return _context.Exercises.Skip((page - 1) * number).Take(number).ToList();
         }
 
-        public Exercise? GetNextExercise(Exercise exercise)
+        public Exercise AddExercise(Exercise exercise)
         {
-            return exercise.Competency.Exercises.Where(e => e.OrderIndex == exercise.OrderIndex + 1).FirstOrDefault();
-        }
-
-        public Exercise AddExercise(Exercise exercise, int competencyId)
-        {
-            exercise.CompetencyId = competencyId;
             var returnExercise = _context.Exercises.Add(exercise);
-            var competencyToUpdate = _context.Competencies.Where(e => e.Id == competencyId).FirstOrDefault();
-            if(competencyToUpdate != null)
+            var competencyToUpdate = _context.Competencies.Where(e => e.Id == returnExercise.Entity.CompetencyId).FirstOrDefault();
+
+            if (competencyToUpdate != null)
             {
-                returnExercise.Entity.OrderIndex = GetHighestOrderIndex(competencyToUpdate) + 1;
-                competencyToUpdate.Exercises.Add(returnExercise.Entity);
+                Exercise lastExercise = _context.Exercises.Where(e => e.Id == competencyToUpdate.LastExerciseId).FirstOrDefault();
+                lastExercise.NextExerciseId = returnExercise.Entity.Id;
+                //TODO: Make sure returnExercise.Entity.Id is not null
             }
             _context.SaveChanges();
             return returnExercise.Entity;
-        }
-
-        public int GetHighestOrderIndex(Competency competency)
-        {
-            return competency.Exercises?.Max(e => e.OrderIndex) ?? 0;
         }
 
         public Exercise? UpdateExercise(Exercise exercise)
@@ -51,44 +41,38 @@ namespace CodePractice.Data.Repos
             var exerciseToUpdate = _context.Exercises.Where(e => e.Id == exercise.Id).FirstOrDefault();
             if (exerciseToUpdate != null)
             {
+                Competency? previousCompetency = _context.Competencies.Where(c=>c.Id==exerciseToUpdate.CompetencyId).FirstOrDefault();
                 exerciseToUpdate.Title = exercise.Title;
                 exerciseToUpdate.Question = exercise.Question;
                 exerciseToUpdate.DesiredOutput = exercise.DesiredOutput;
                 exerciseToUpdate.Answer = exercise.Answer;
                 exerciseToUpdate.Hint = exercise.Hint;
-                if(exerciseToUpdate.CompetencyId != exercise.CompetencyId)
+                if (exerciseToUpdate.CompetencyId != exercise.CompetencyId)
                 {
-                    //Remove exercise from old competency
-                    var oldCompetency = _context.Competencies.Where(c => c.Id == exerciseToUpdate.CompetencyId).FirstOrDefault();
-                    if(oldCompetency != null)
+                    //Is this the first exercise in the competency?
+                    if (exerciseToUpdate.PreviousExerciseId == null)
                     {
-                        oldCompetency.Exercises.Remove(exerciseToUpdate);
-                        //Reorder exercises in old competency
-                        foreach(var e in oldCompetency.Exercises)
-                        {
-                            if(e.OrderIndex > exerciseToUpdate.OrderIndex)
-                            {
-                                e.OrderIndex--;
-                            }
-                        }
+                        //Set new competency's first exercise to this exercise's next exercise
+                        previousCompetency.FirstExerciseId = exerciseToUpdate.NextExerciseId;
                     }
-                    //Add exercise to new competency
-                    var newCompetency = _context.Competencies.Where(c => c.Id == exercise.CompetencyId).FirstOrDefault();
-                    if(newCompetency != null)
+                    else //This is not the first exercise in the competency
                     {
-                        newCompetency.Exercises.Add(exerciseToUpdate);
-                        //Reorder exercises in new competency
-                        foreach(var e in newCompetency.Exercises)
+                        //Set previous exercise's next exercise to this exercise's next exercise
+                        Exercise previousExercise = _context.Exercises.Where(e => e.Id == exerciseToUpdate.PreviousExerciseId).FirstOrDefault();
+                        if (previousExercise != null)
                         {
-                            if(e.OrderIndex >= exercise.OrderIndex)
-                            {
-                                e.OrderIndex++;
-                            }
+                            previousExercise.NextExerciseId = exerciseToUpdate.NextExerciseId;
                         }
+                        
                     }
+                    //Set new competency
                     exerciseToUpdate.CompetencyId = exercise.CompetencyId;
+                    //place new exercise at end of new competency
+                    Competency? newCompetency = _context.Competencies.Where(c => c.Id == exercise.CompetencyId).FirstOrDefault();
+                    Exercise? lastExercise = _context.Exercises.Where(e => e.Id == newCompetency.LastExerciseId).FirstOrDefault();
+                    lastExercise.NextExerciseId = exerciseToUpdate.Id;
+                    newCompetency.LastExerciseId = exerciseToUpdate.Id;
                 }
-                exerciseToUpdate.OrderIndex = exercise.OrderIndex;  
             }
             _context.SaveChanges();
             return exerciseToUpdate;
@@ -97,30 +81,24 @@ namespace CodePractice.Data.Repos
         public bool DeleteExercise(int id)
         {
             var exerciseToDelete = _context.Exercises.Where(e => e.Id == id).FirstOrDefault();
-            //Remove exercise from competency
-            var competencyToUpdate = _context.Competencies.Where(c => c.Id == exerciseToDelete.CompetencyId).FirstOrDefault();
-            if(competencyToUpdate != null)
-            {
-                competencyToUpdate.Exercises.Remove(exerciseToDelete);
-                //Reorder exercises in competency
-                foreach(var e in competencyToUpdate.Exercises)
-                {
-                    if(e.OrderIndex > exerciseToDelete.OrderIndex)
-                    {
-                        e.OrderIndex--;
-                    }
-                }
-            }
-            if (exerciseToDelete != null)
-            {
-                _context.Exercises.Remove(exerciseToDelete);
-                _context.SaveChanges();
-                return true;
-            }
-            else
+            if (exerciseToDelete == null)
             {
                 return false;
             }
+            //Reorder exercises in competency
+            if (exerciseToDelete.PreviousExerciseId == null)
+            {
+                Competency? competencyToUpdate = _context.Competencies.Where(c => c.Id == exerciseToDelete.CompetencyId).FirstOrDefault();
+                competencyToUpdate.FirstExerciseId = exerciseToDelete.NextExerciseId;
+            }
+            else
+            {
+                Exercise ? previousExercise = _context.Exercises.Where(e => e.Id == exerciseToDelete.PreviousExerciseId).FirstOrDefault();
+                previousExercise.NextExerciseId = exerciseToDelete.NextExerciseId;
+            }
+            _context.Exercises.Remove(exerciseToDelete);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

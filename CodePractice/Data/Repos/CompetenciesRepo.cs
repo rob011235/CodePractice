@@ -14,13 +14,13 @@ namespace CodePractice.Data.Repos
 
         public Competency? GetCompetency(int id)
         {
-            Competency? competency = _context.Competencies.Where(e => e.Id == id).Include(c=>c.Exercises).FirstOrDefault();
+            Competency? competency = _context.Competencies.Where(e => e.Id == id).FirstOrDefault();
             return competency;
         }
 
         public List<Competency> GetCompetencies(int page, int number)
         {
-            return _context.Competencies.Skip((page - 1) * number).Take(number).Include(c=>c.Exercises).ToList();
+            return _context.Competencies.Skip((page - 1) * number).Take(number).ToList();
         }
 
         public Competency AddCompetency(Competency competency)
@@ -32,12 +32,14 @@ namespace CodePractice.Data.Repos
 
         public Competency? UpdateCompetency(Competency competency)
         {
-            var competencyToUpdate = _context.Competencies.Where(e => e.Id == competency.Id).Include(c=>c.Exercises).FirstOrDefault();
+            var competencyToUpdate = _context.Competencies.Where(e => e.Id == competency.Id).FirstOrDefault();
             if (competencyToUpdate != null)
             {
                 competencyToUpdate.Title = competency.Title;
                 competencyToUpdate.Description = competency.Description;
-                competencyToUpdate.Exercises = competency.Exercises;
+                competencyToUpdate.FirstExerciseId = competency.FirstExerciseId;
+                competencyToUpdate.LastExerciseId = competency.LastExerciseId;
+                _context.Competencies.Update(competencyToUpdate);
             }
             _context.SaveChanges();
             return competencyToUpdate;
@@ -45,16 +47,31 @@ namespace CodePractice.Data.Repos
 
         public bool DeleteCompetency(int id)
         {
-            var exerciseToDelete = _context.Competencies.Where(e => e.Id == id).FirstOrDefault();
-            if (exerciseToDelete != null)
+            var competencyToDelete = _context.Competencies.Where(e => e.Id == id).FirstOrDefault();
+            if (competencyToDelete != null)
             {
-                _context.Competencies.Remove(exerciseToDelete);
+                //TODO: Remove exercises from competency
+                _context.Competencies.Remove(competencyToDelete);
                 _context.SaveChanges();
                 return true;
             }
             else
             {
                 return false;
+            }
+        }
+
+        public Exercise GetFirstExercise(int id)
+        {
+            var competency = _context.Competencies.Where(e => e.Id == id).FirstOrDefault();
+            if (competency != null)
+            {
+                var exercise = _context.Exercises.Where(e => e.Id == competency.FirstExerciseId).FirstOrDefault();
+                return exercise;
+            }
+            else
+            {
+                return null;
             }
         }
     }

@@ -9,5 +9,6 @@ namespace CodePractice.Data.Interfaces
         Competency? UpdateCompetency(Competency competency);
         Competency AddCompetency(Competency competency);
         bool DeleteCompetency(int id);
+        public Exercise GetFirstExercise(int id);
     }
 }

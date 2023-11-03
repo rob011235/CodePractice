@@ -39,7 +39,7 @@ else
                 {
                     <tr>
                         <td><a href="/Competency/@competency.Id">@competency.Title</a></td>
-                        <td>@competency.Exercises.Count</td>
+                        <td>TODO: Number completed</td>
                         @if (isInEditMode)
                         {
                             <td><button class="btn btn-sm btn-primary" @onclick="()=>OnEditClick(competency.Id)">Edit</button><button class="btn btn-sm btn-danger" @onclick="()=>OnDeleteClick(competency.Id)">Delete</button></td>

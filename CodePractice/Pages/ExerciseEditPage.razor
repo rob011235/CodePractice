@@ -1,6 +1,7 @@
 ﻿@page "/ExerciseEdit/{CompetencyId:int}"
 @page "/ExerciseEdit/{CompetencyId:int}/{ExerciseId:int}"
 @inject IExerciseRepo ExerciseRepo
+@inject ICompetenciesRepo CompetencyRepo  
 @inject NavigationManager NavigationManager
 
 <h3>Exercise Edit</h3>
@@ -41,11 +42,12 @@ else
     
     [Parameter]
     public int? CompetencyId { get; set; }
+    public Competency? Competency { get; set; }
 
     [Parameter]
     public int? ExerciseId { get; set; }
-
     public Exercise? exercise { get; set; }
+
     string SubmittedFileName { get; set; }
 
     protected override void OnInitialized()
@@ -64,6 +66,7 @@ else
         {
             exercise = ExerciseRepo.GetExercise((int)ExerciseId);
         }
+        Competency = CompetencyRepo.GetCompetency((int)CompetencyId);
     }
 
     protected async Task OnSubmitClick()
@@ -74,7 +77,8 @@ else
         }
         else if (exercise?.Id == 0 && CompetencyId != null)
         {
-            ExerciseRepo.AddExercise(exercise, (int)CompetencyId);
+            exercise.CompetencyId = (int)CompetencyId;
+            ExerciseRepo.AddExercise(exercise);
             NavigationManager.NavigateTo($"/CompetencyEdit/{CompetencyId}",true);
         }
         else
