@@ -4,28 +4,36 @@
 
 <h3>
     Competencies
-    <AuthorizeView Roles="Admin">
-        <Authorized>
-            @if (isInEditMode)
-            {
-                <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=false">Exit Edit Mode</button>
-            }
-            else
-            {
-                <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=true">Edit Mode</button>
-            }
-        </Authorized>
-    </AuthorizeView>
 </h3>
 
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        @if (isInEditMode)
+        {
+            <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=false">Exit Edit Mode</button>
+        }
+        else
+        {
+            <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=true">Edit Mode</button>
+        }
+    </Authorized>
+</AuthorizeView>
+@if (isInEditMode)
+{
+    <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=false">Exit Edit Mode</button>
+}
+else
+{
+    <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=true">Edit Mode</button>
+}
 @if (competencies == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <button class="btn btn-primary" @onclick="()=>page++">Next</button>
-    <button class="btn btn-primary" @onclick="()=>page--">Previous</button>
+    <button class="btn btn-outline-primary" @onclick="()=>page--">Previous</button>
+    <button class="btn btn-outline-primary" @onclick="()=>page++">Next</button>
     <div class="form-group">
         <table class="table">
             <thead>

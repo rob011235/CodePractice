@@ -1,4 +1,4 @@
-﻿@page "/CompetencyEdit/"
+﻿@* @page "/CompetencyEdit/"
 @page "/CompetencyEdit/{Id:int}"
 @inject ICompetenciesRepo repo
 @inject NavigationManager NavigationManager
@@ -156,4 +156,4 @@ else
     {
         NavigationManager.NavigateTo($"Competencies");
     }   
-}
+} *@
