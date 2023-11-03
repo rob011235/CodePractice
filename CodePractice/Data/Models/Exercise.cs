@@ -10,5 +10,6 @@
         public string Hint { get; set; } = "";
         public int CompetencyId { get; set; }
         public virtual Competency Competency { get; set; }
+        public int OrderIndex { get; set; }
     }
 }
