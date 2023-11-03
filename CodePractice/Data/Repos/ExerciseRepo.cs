@@ -29,7 +29,7 @@ namespace CodePractice.Data.Repos
 
         public Exercise AddExercise(Exercise exercise, int competencyId)
         {
-
+            exercise.CompetencyId = competencyId;
             var returnExercise = _context.Exercises.Add(exercise);
             var competencyToUpdate = _context.Competencies.Where(e => e.Id == competencyId).FirstOrDefault();
             if(competencyToUpdate != null)
@@ -86,8 +86,8 @@ namespace CodePractice.Data.Repos
                             }
                         }
                     }
+                    exerciseToUpdate.CompetencyId = exercise.CompetencyId;
                 }
-                exerciseToUpdate.CompetencyId = exercise.CompetencyId;
                 exerciseToUpdate.OrderIndex = exercise.OrderIndex;  
             }
             _context.SaveChanges();

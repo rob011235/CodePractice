@@ -4,28 +4,19 @@
 
 <h3>
     Competencies
-</h3>
-
 <AuthorizeView Roles="Admin">
     <Authorized>
         @if (isInEditMode)
         {
-            <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=false">Exit Edit Mode</button>
+            <button class="btn btn-sm btn-primary float-right" @onclick="()=>isInEditMode=false">Exit Edit Mode</button>
         }
         else
         {
-            <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=true">Edit Mode</button>
+            <button class="btn btn-sm btn-primary float-right" @onclick="()=>isInEditMode=true">Edit Mode</button>
         }
     </Authorized>
 </AuthorizeView>
-@if (isInEditMode)
-{
-    <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=false">Exit Edit Mode</button>
-}
-else
-{
-    <button class="btn btn-sm btn-primary" @onclick="()=>isInEditMode=true">Edit Mode</button>
-}
+</h3>
 @if (competencies == null)
 {
     <p><em>Loading...</em></p>

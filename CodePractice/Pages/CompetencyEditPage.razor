@@ -1,4 +1,4 @@
-﻿@* @page "/CompetencyEdit/"
+﻿@page "/CompetencyEdit/"
 @page "/CompetencyEdit/{Id:int}"
 @inject ICompetenciesRepo repo
 @inject NavigationManager NavigationManager
@@ -116,6 +116,10 @@ else
         {
             Competency = repo.AddCompetency(Competency);
         }
+        else
+        {
+            Competency = repo.UpdateCompetency(Competency);
+        }
         NavigationManager.NavigateTo($"ExerciseEdit/{Competency?.Id}");
     }
 
@@ -156,4 +160,4 @@ else
     {
         NavigationManager.NavigateTo($"Competencies");
     }   
-} *@
+}
