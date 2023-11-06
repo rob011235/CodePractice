@@ -29,7 +29,10 @@ namespace CodePractice.Data.Repos
             if (competencyToUpdate != null)
             {
                 Exercise lastExercise = _context.Exercises.Where(e => e.Id == competencyToUpdate.LastExerciseId).FirstOrDefault();
-                lastExercise.NextExerciseId = returnExercise.Entity.Id;
+                if (lastExercise != null)
+                {
+                    lastExercise.NextExerciseId = returnExercise.Entity.Id;
+                }
                 //TODO: Make sure returnExercise.Entity.Id is not null
             }
             _context.SaveChanges();

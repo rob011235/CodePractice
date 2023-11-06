@@ -55,6 +55,7 @@ namespace CodePractice
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.MapControllers();
             app.MapBlazorHub();
