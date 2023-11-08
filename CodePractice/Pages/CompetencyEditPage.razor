@@ -12,52 +12,58 @@
 else
 {
     <EditForm Model="@Competency" OnValidSubmit="OnSubmitClick">
-        <DataAnnotationsValidator/>
+        <DataAnnotationsValidator />
         <div class="form-group">
             <label for="title">Title</label>
-            <InputText class="form-control" id="title" aria-describedby="title" placeholder="Enter title" @bind-Value="Competency.Title" />
+            <InputText class="form-control" id="title" aria-describedby="title" placeholder="Enter title" @bind-Value=Competency.Title />
             <small id="titleHelp" class="form-text text-muted">Please enter a title for this competency.</small>
-            <ValidationMessage For="Title"/>
+            <ValidationMessage For="() => Competency.Title" />
         </div>
         <div class="form-group">
             <label for="description">Description</label>
-            <InputTextArea class="form-control" id="description" aria-describedby="description" placeholder="Enter description" @bind-Value="Competency.Description" />
+            <InputTextArea class="form-control" id="description" aria-describedby="description" placeholder="Enter description" @bind-Value=Competency.Description />
             <small id="competencyHelp" class="form-text text-muted">Please enter a description for this competency.</small>
+            <ValidationMessage For="() => Competency.Description" />
         </div>
         <div class="form-group">
-            @if (Exercises?.Count() > 0)
-            {
+            <div class="card">
+                <div class="card-body">
+                    @if (Exercises?.Count() > 0)
+                    {
 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Exercise</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var exercise in Exercises)
-                        {
-                            <tr>
-                                <td>@exercise.Title</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary" @onclick="()=>OnEditClick(exercise.Id)">Edit</button>
-                                    <button class="btn btn-sm btn-danger" @onclick="()=>OnDeleteClick(exercise.Id)">Delete</button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Exercise</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exercise in Exercises)
+                                {
+                                    <tr>
+                                        <td>@exercise.Title</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" @onclick="()=>OnEditClick(exercise.Id)">Edit</button>
+                                            <button class="btn btn-sm btn-danger" @onclick="()=>OnDeleteClick(exercise.Id)">Delete</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
 
+                </div>
+                <p class="form-group">
+                    <button type="button" class="btn btn-sm btn-primary" @onclick="@OnAddExerciseClick">Add Exercise</button>
+                </p>
+
+            </div>
         </div>
-        <div class="form-group">
-            <button class="btn btn-sm btn-primary" @onclick="@OnAddExerciseClick">Add Exercise</button>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary" @onclick="OnSubmitClick">Submit</button>
+        <p class="form-group">
+            <button type="submit" class="btn btn-primary">Submit</button>
             <button class="btn btn-danger" @onclick="OnCancelClick">Cancell</button>
-        </div>
+        </p>
 
 
     </EditForm>
@@ -151,7 +157,7 @@ else
         showModal = false;
     }
 
-    void OnSubmitClick()
+    public void OnSubmitClick(EditContext editContext)
     {
         if (Competency?.Id == 0)
         {
@@ -162,6 +168,7 @@ else
             Competency = repo.UpdateCompetency(Competency);
         }
         NavigationManager.NavigateTo($"Competencies");
+
     }
 
     void OnCancelClick()

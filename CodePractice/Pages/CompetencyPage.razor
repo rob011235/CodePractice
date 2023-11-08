@@ -5,13 +5,13 @@
 <p>@((MarkupString)Competency.Description)</p>
 
 <h5>Exercises</h5>
-@if(exercise != null)
+@if(exercise == null)
 {
-    <a class="btn btn-primary" href="exercise/@exercise.Id">Try exercise</a>
+    <p>No exercises found</p>
 }
 else
 {
-    <p>No exercises found</p>
+    <a class="btn btn-primary" href="exercise/@exercise.Id">Try exercise</a>
 }
 @* <ul>
     @foreach (Exercise exercise in Exercises)
