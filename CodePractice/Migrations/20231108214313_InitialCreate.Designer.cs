@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodePractice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231103165635_InitialCreate")]
+    [Migration("20231108214313_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,7 +27,6 @@ namespace CodePractice.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("FirstExerciseId")
@@ -37,7 +36,6 @@ namespace CodePractice.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -55,7 +53,7 @@ namespace CodePractice.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CompetencyId")
+                    b.Property<int?>("CompetencyId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("DesiredOutput")
@@ -92,14 +90,12 @@ namespace CodePractice.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("DisplayName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StorageName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("SubmissionId")
+                    b.Property<int?>("SubmissionId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -116,37 +112,27 @@ namespace CodePractice.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Code")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ExerciseId")
+                    b.Property<int?>("ExerciseId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("InstructorComments")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsCorrect")
+                    b.Property<bool?>("IsCorrect")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("StudentComments")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("SubmissionDate")
+                    b.Property<DateTime?>("SubmissionDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ExerciseId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Submissions");
                 });
@@ -179,15 +165,15 @@ namespace CodePractice.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8c3e4b63-9b60-497f-81a5-9d3e955a7b5b",
-                            ConcurrencyStamp = "7777c024-1a5e-420c-a9d3-c7df4a074191",
+                            Id = "1d9bfbcb-0d4f-4bc4-9324-65ab397d37a1",
+                            ConcurrencyStamp = "074ed4c2-0ae2-4ce4-890e-35ef49011266",
                             Name = "Instructor",
                             NormalizedName = "INSTRUCTOR"
                         },
                         new
                         {
-                            Id = "046eb3d3-e32d-49a1-83e6-a6a5ac77de20",
-                            ConcurrencyStamp = "24d690f2-f554-469a-a030-c49ae027f8cc",
+                            Id = "624e0ebd-bc40-4bd9-8e8e-a08becb553ab",
+                            ConcurrencyStamp = "8bc73761-e088-4be9-a78b-0470ee4558fe",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -365,30 +351,9 @@ namespace CodePractice.Migrations
 
             modelBuilder.Entity("CodePractice.Data.Models.File", b =>
                 {
-                    b.HasOne("CodePractice.Data.Models.Submission", "Submission")
+                    b.HasOne("CodePractice.Data.Models.Submission", null)
                         .WithMany("Files")
-                        .HasForeignKey("SubmissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Submission");
-                });
-
-            modelBuilder.Entity("CodePractice.Data.Models.Submission", b =>
-                {
-                    b.HasOne("CodePractice.Data.Models.Exercise", "Exercise")
-                        .WithMany()
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("Exercise");
-
-                    b.Navigation("User");
+                        .HasForeignKey("SubmissionId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

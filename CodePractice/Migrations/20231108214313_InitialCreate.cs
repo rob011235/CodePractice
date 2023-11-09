@@ -58,8 +58,8 @@ namespace CodePractice.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
                     FirstExerciseId = table.Column<int>(type: "INTEGER", nullable: true),
                     LastExerciseId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -79,13 +79,32 @@ namespace CodePractice.Migrations
                     DesiredOutput = table.Column<string>(type: "TEXT", nullable: false),
                     Answer = table.Column<string>(type: "TEXT", nullable: false),
                     Hint = table.Column<string>(type: "TEXT", nullable: false),
-                    CompetencyId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CompetencyId = table.Column<int>(type: "INTEGER", nullable: true),
                     PreviousExerciseId = table.Column<int>(type: "INTEGER", nullable: true),
                     NextExerciseId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Exercises", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Submissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Code = table.Column<string>(type: "TEXT", nullable: true),
+                    ExerciseId = table.Column<int>(type: "INTEGER", nullable: true),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    SubmissionDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    IsCorrect = table.Column<bool>(type: "INTEGER", nullable: true),
+                    StudentComments = table.Column<string>(type: "TEXT", nullable: true),
+                    InstructorComments = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Submissions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -195,45 +214,14 @@ namespace CodePractice.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Submissions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Code = table.Column<string>(type: "TEXT", nullable: false),
-                    ExerciseId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId1 = table.Column<string>(type: "TEXT", nullable: true),
-                    SubmissionDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    IsCorrect = table.Column<bool>(type: "INTEGER", nullable: false),
-                    StudentComments = table.Column<string>(type: "TEXT", nullable: false),
-                    InstructorComments = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Submissions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Submissions_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Submissions_Exercises_ExerciseId",
-                        column: x => x.ExerciseId,
-                        principalTable: "Exercises",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "File",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    DisplayName = table.Column<string>(type: "TEXT", nullable: false),
-                    StorageName = table.Column<string>(type: "TEXT", nullable: false),
-                    SubmissionId = table.Column<int>(type: "INTEGER", nullable: false)
+                    DisplayName = table.Column<string>(type: "TEXT", nullable: true),
+                    StorageName = table.Column<string>(type: "TEXT", nullable: true),
+                    SubmissionId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -242,8 +230,7 @@ namespace CodePractice.Migrations
                         name: "FK_File_Submissions_SubmissionId",
                         column: x => x.SubmissionId,
                         principalTable: "Submissions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -251,8 +238,8 @@ namespace CodePractice.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "046eb3d3-e32d-49a1-83e6-a6a5ac77de20", "24d690f2-f554-469a-a030-c49ae027f8cc", "Admin", "ADMIN" },
-                    { "8c3e4b63-9b60-497f-81a5-9d3e955a7b5b", "7777c024-1a5e-420c-a9d3-c7df4a074191", "Instructor", "INSTRUCTOR" }
+                    { "1d9bfbcb-0d4f-4bc4-9324-65ab397d37a1", "074ed4c2-0ae2-4ce4-890e-35ef49011266", "Instructor", "INSTRUCTOR" },
+                    { "624e0ebd-bc40-4bd9-8e8e-a08becb553ab", "8bc73761-e088-4be9-a78b-0470ee4558fe", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -296,16 +283,6 @@ namespace CodePractice.Migrations
                 name: "IX_File_SubmissionId",
                 table: "File",
                 column: "SubmissionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Submissions_ExerciseId",
-                table: "Submissions",
-                column: "ExerciseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Submissions_UserId1",
-                table: "Submissions",
-                column: "UserId1");
         }
 
         /// <inheritdoc />
@@ -330,19 +307,19 @@ namespace CodePractice.Migrations
                 name: "Competencies");
 
             migrationBuilder.DropTable(
+                name: "Exercises");
+
+            migrationBuilder.DropTable(
                 name: "File");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Submissions");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Exercises");
+                name: "Submissions");
         }
     }
 }
