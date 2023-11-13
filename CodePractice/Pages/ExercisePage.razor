@@ -1,52 +1,94 @@
 ﻿@page "/exercise/{id:int}"
-@inject IExerciseRepo repo;
+@inject IExercisesRepo exercisesRepo;
+@inject ISubmissionsRepo submissionsRepo;
 @inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthStateProvider;
+
 @if (exercise == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
+    <div class="form-group">
+        <h3>@exercise.Title</h3>
+    </div>
+    <div class="form-group">
+        <h4>Coding problem</h4>
+        <small class="form-text text-muted">Solve this problem with your code.</small>
+        <p>@((MarkupString)exercise.Question)</p>
+    </div>
+    <div class="form-group">
+        <h4>Desired Output</h4>
+        <small class="form-text text-muted">You program should display the folloiwng output.</small>
+        <p>
+            <code>
+                @((MarkupString)exercise.DesiredOutput)
+            </code>
+        </p>
+    </div>
+    <AuthorizeView>
+        <Authorized>
+            <div class="form-group">
+                <h4>Upload code</h4>
 
-    <h3>@exercise.Title</h3>
-    <h4>Coding problem</h4>
-    <small class="form-text text-muted">Solve this problem with your code.</small>
-    <p>@((MarkupString)exercise.Question)</p>
-    <h4>Desired Output</h4>
-    <small class="form-text text-muted">You program should display the folloiwng output.</small>
-    <p>@((MarkupString)exercise.DesiredOutput)</p>
-   
-    <h4>Upload code</h4>
+                <small class="form-text text-muted">Once your program solves the problem and shows the desired output, upload it here for you instructor to look at latter.</small>
+            </div>
 
-    <small class="form-text text-muted">Once your program solves the problem and shows the desired output, upload it here for you instructor to look at latter.</small>
-    @if (!showAnswer)
-    {
-        <InputFile class="form-control"  OnChange="OnFileChange" />
-    }
-    <p>@SubmittedFileName</p>
+            @if (!showAnswer)
+            {
+                <div class="form-group">
+                    <label>Submit as file</label>
+                    <InputCheckbox @bind-Value="submitAsFile"></InputCheckbox>
+                    <small>Use for larger programs or programs with multiple files.</small>
+                </div>
+                <div class="form-group">
+                    @if (submitAsFile)
+                    {
+                        <small class="form-text text-muted">Zip all your files into a single zip file and upload it here.</small>
+                        <InputFile class="form-control" OnChange="OnFileChange" />
+                    }
+                    else
+                    {
+                        <small class="form-text text-muted">Copy and paste your code into the text area below.</small>
+                        <InputTextArea class="form-control" @bind-Value="submission.Code" />
 
-    <h4>Submission Comments</h4>
-    <small class="form-text text-muted">Enter any comments or questions you want your instructor to see here.</small>
-    <InputTextArea class="form-control" @bind-Value="submission.StudentComments" />
-    @if (showAnswer)
-    {
-        <div class="form-group">
-            <h4>Answer</h4>
-            <small class="form-text text-muted">Once you see the answer you can't make any more submissions on this problem but don't worry! You can just try another problem until you get it right.</small>
-            <p>@((MarkupString)@exercise.Answer)</p>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary" @onclick="OnReturnClick">Return to competency page</button>
-            <button class="btn btn-primary" @onclick="OnGetNextProblem">Try another problem</button>
-        </div>
-    }
-    else
-    {
-        <div class="form-group">
-            <button class="btn btn-primary" @onclick="OnShowAnswerClick">Submit Program and Show Answer</button>
-            <button class="btn btn-danger" @onclick="OnReturnClick">Cancel   </button>
-        </div>
-    }
+                    }
+                </div>
+            }
+            <div class="form-group">
+                <p>@SubmittedFileName</p>
+            </div>
+            @if (showAnswer)
+            {
+                <div class="form-group">
+                    <h4>Answer</h4>
+                    <small class="form-text text-muted">Once you see the answer you can't make any more submissions on this problem but don't worry! You can just try another problem until you get it right.</small>
+                    <p>@((MarkupString)@exercise.Answer)</p>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" @onclick="OnReturnClick">Return to competency page</button>
+                    <button class="btn btn-primary" @onclick="OnGetNextProblem">Try another problem</button>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <button class="btn btn-primary" @onclick="OnShowAnswerClick">Submit Program and Show Answer</button>
+                    <button class="btn btn-danger" @onclick="OnReturnClick">Return to Competency Page</button>
+                </div>
+            }
+            <div class="form-group">
+                <h4>Submission Comments</h4>
+                <small class="form-text text-muted">Enter any comments or questions you want your instructor to see here.</small>
+                <InputTextArea class="form-control" @bind-Value="submission.StudentComments" />
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            Login to submit your answer.
+        </NotAuthorized>
+    </AuthorizeView>
+    
 }
 @code {
     [Parameter]
@@ -55,11 +97,15 @@ else
     public Submission? submission { get; set; } = new Submission();
     string SubmittedFileName { get; set; }
     bool showAnswer = false;
-
+    bool submitAsFile = false;
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        exercise = repo.GetExercise(Id);
+        submission = new Submission();
+        SubmittedFileName = null;
+        showAnswer = false;
+        submitAsFile = false;
+        exercise = exercisesRepo.GetExercise(Id);
     }
 
     private void OnReturnClick()
@@ -70,6 +116,13 @@ else
     private void OnShowAnswerClick()
     {
         showAnswer = true;
+        submission.ExerciseId = exercise.Id;
+        var authState = AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.Result.User;
+        submission.UserName = user?.Identity?.Name;
+        submission.SubmissionDate = DateTime.Now;
+        submissionsRepo.AddSubmission(submission);
+
     }
     private void OnFileChange(InputFileChangeEventArgs e)
     {
@@ -79,14 +132,14 @@ else
 
     private void OnGetNextProblem()
     {
-        // var nextExercise = repo.GetNextExercise(exercise);
-        // if (nextExercise == null)
-        // {
-        //     NavigationManager.NavigateTo($"competency/{exercise.Competency.Id}");
-        // }
-        // else
-        // {
-        //     NavigationManager.NavigateTo($"exercise/{nextExercise.Id}");
-        // }
+        var nextExercise = exercisesRepo.GetNextExercise(exercise);
+        if (nextExercise == null)
+        {            
+            NavigationManager.NavigateTo($"/request-additional-exercises/{exercise.CompetencyId}",true);
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"exercise/{nextExercise.Id}");
+        }
     }
 }

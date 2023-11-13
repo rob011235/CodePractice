@@ -31,9 +31,11 @@ namespace CodePractice
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            builder.Services.AddTransient<IExerciseRepo, ExerciseRepo>();
+            builder.Services.AddTransient<IExercisesRepo, ExerciseRepo>();
             builder.Services.AddTransient<ICompetenciesRepo, CompetenciesRepo>();
             builder.Services.AddTransient<IInstructorsRepo, InstructorsRepo>();
+            builder.Services.AddTransient<ISubmissionsRepo, SubmissionsRepo>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

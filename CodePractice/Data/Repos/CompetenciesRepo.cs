@@ -18,6 +18,11 @@ namespace CodePractice.Data.Repos
             return competency;
         }
 
+        public List<Competency> GetCompetencies()
+        {
+            return _context.Competencies.ToList();
+        }
+
         public List<Competency> GetCompetencies(int page, int number)
         {
             return _context.Competencies.Skip((page - 1) * number).Take(number).ToList();

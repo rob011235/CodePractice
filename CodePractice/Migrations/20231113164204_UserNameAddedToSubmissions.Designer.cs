@@ -3,6 +3,7 @@ using System;
 using CodePractice.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodePractice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231113164204_UserNameAddedToSubmissions")]
+    partial class UserNameAddedToSubmissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
@@ -76,8 +79,6 @@ namespace CodePractice.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompetencyId");
 
                     b.ToTable("Exercises");
                 });
@@ -167,15 +168,15 @@ namespace CodePractice.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "76609e7d-5243-4023-a0c8-ae3662a4c539",
-                            ConcurrencyStamp = "cfd49c95-76c6-47b7-bdcd-4f17035588cb",
+                            Id = "05a9961d-51fc-45bf-9f10-6726dab09bd2",
+                            ConcurrencyStamp = "1ea8e9a9-9d10-42dd-829e-0eb6ff7ec6f7",
                             Name = "Instructor",
                             NormalizedName = "INSTRUCTOR"
                         },
                         new
                         {
-                            Id = "4da45dac-f7d8-48c8-b528-03b750b3d3e6",
-                            ConcurrencyStamp = "b021b273-5c1b-4afb-8b96-e39f511cea84",
+                            Id = "3fc0a223-862f-481c-9fa0-f4d317508fcb",
+                            ConcurrencyStamp = "91677105-6d72-4eda-a56a-212548091bed",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -349,15 +350,6 @@ namespace CodePractice.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("CodePractice.Data.Models.Exercise", b =>
-                {
-                    b.HasOne("CodePractice.Data.Models.Competency", "Competency")
-                        .WithMany()
-                        .HasForeignKey("CompetencyId");
-
-                    b.Navigation("Competency");
                 });
 
             modelBuilder.Entity("CodePractice.Data.Models.File", b =>

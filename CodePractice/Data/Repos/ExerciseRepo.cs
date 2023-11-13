@@ -1,9 +1,12 @@
 ﻿using CodePractice.Data.Interfaces;
 using CodePractice.Data.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CodePractice.Data.Repos
 {
-    public class ExerciseRepo : IExerciseRepo
+    public class ExerciseRepo : IExercisesRepo
     {
         private readonly ApplicationDbContext _context;
         public ExerciseRepo(ApplicationDbContext context)
@@ -16,9 +19,9 @@ namespace CodePractice.Data.Repos
             return _context.Exercises.Where(e => e.Id == id).FirstOrDefault();
         }
 
-        public List<Exercise> GetExercises(int page, int number)
+        public List<Exercise> GetExercises(int page, int pageSize)
         {
-            return _context.Exercises.Skip((page - 1) * number).Take(number).ToList();
+            return _context.Exercises.Include(e=>e.Competency).Skip((page - 1) * pageSize).Take(pageSize).ToList();
         }
 
         public Exercise AddExercise(Exercise exercise)
@@ -107,6 +110,22 @@ namespace CodePractice.Data.Repos
             _context.Exercises.Remove(exerciseToDelete);
             _context.SaveChanges();
             return true;
+        }
+
+        //Get next exercise
+        public Exercise? GetNextExercise(Exercise exercise)
+        {
+            if (exercise == null)
+            {
+                return null;
+            }
+            return _context.Exercises.Where(e => e.Id == exercise.NextExerciseId).FirstOrDefault();
+        }
+
+        //Get exercise by competency
+        public List<Exercise> GetExercisesByCompetency(int competencyId, int page, int pageSize)
+        {
+            return _context.Exercises.Where(e=>e.CompetencyId == competencyId).Include(e => e.Competency).Skip((page - 1) * pageSize).Take(pageSize).ToList();
         }
     }
 }
