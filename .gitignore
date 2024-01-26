@@ -401,3 +401,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/CodePractice/bin/Debug/net7.0/CodePractice.exe
