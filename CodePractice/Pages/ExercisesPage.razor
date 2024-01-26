@@ -24,8 +24,8 @@
         @foreach (var exercise in exercises)
         {
             <tr>
-                <td>@exercise.Title</td>
                 <td>@exercise.Competency?.Title</td>
+                <td>@exercise.Title</td>
             </tr>
         }
     </tbody>
