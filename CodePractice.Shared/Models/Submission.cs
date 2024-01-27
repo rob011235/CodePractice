@@ -1,0 +1,16 @@
+﻿namespace CodePractice.Shared.Models
+{
+    public class Submission
+    {
+        public int Id { get; set; }
+        public string? Code { get; set; }
+        public List<FileSubmission> Files { get; set; } = new List<FileSubmission>();
+        public int? ExerciseId { get; set; }
+        public int? UserId { get; set; }
+        public string? UserName { get; set; }
+        public DateTime? SubmissionDate { get; set; }
+        public bool? IsCorrect { get; set; }
+        public string? StudentComments { get; set; }
+        public string? InstructorComments { get; set; }
+    }
+}

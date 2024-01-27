@@ -1,0 +1,18 @@
+﻿@page "/request-additional-exercises/{CompetencyId:int}"
+@rendermode InteractiveServer
+<h3>Regretably we have no more exercises for this competency. A request for more has been sent to the exercise development team.</h3>
+
+@code {
+    [Parameter]
+    public int CompetencyId { get; set; }
+
+    public Competency? competency { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        //TODO: Send emailt to insturctor for more exercises.
+
+    }
+
+}
