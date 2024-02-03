@@ -27,21 +27,6 @@ namespace CodePractice.Data.Repos
         {
             var returnExercise = _context.Exercises.Add(exercise);
             var competencyToUpdate = _context.Competencies.Where(e => e.Id == returnExercise.Entity.CompetencyId).FirstOrDefault();
-
-            //if (competencyToUpdate != null)
-            //{
-            //    Exercise lastExercise = _context.Exercises.Where(e => e.Id == competencyToUpdate.LastExerciseId).FirstOrDefault();
-
-            //    if (lastExercise != null)
-            //    {
-            //        lastExercise.NextExerciseId = returnExercise.Entity.Id;
-            //    }
-            //    else
-            //    {
-            //        competencyToUpdate.FirstExerciseId = returnExercise.Entity.Id;
-            //    }
-            //    //TODO: Make sure returnExercise.Entity.Id is not null
-            //}
             _context.SaveChanges();
             return returnExercise.Entity;
         }
@@ -51,7 +36,6 @@ namespace CodePractice.Data.Repos
             var exerciseToUpdate = _context.Exercises.Where(e => e.Id == exercise.Id).FirstOrDefault();
             if (exerciseToUpdate != null)
             {
-                Competency? previousCompetency = _context.Competencies.Where(c=>c.Id==exerciseToUpdate.CompetencyId).FirstOrDefault();
                 exerciseToUpdate.Title = exercise.Title;
                 exerciseToUpdate.Question = exercise.Question;
                 exerciseToUpdate.DesiredOutput = exercise.DesiredOutput;
@@ -70,33 +54,11 @@ namespace CodePractice.Data.Repos
             {
                 return false;
             }
-            ////Reorder exercises in competency
-            //if (exerciseToDelete.PreviousExerciseId == null)
-            //{
-            //    Competency? competencyToUpdate = _context.Competencies.Where(c => c.Id == exerciseToDelete.CompetencyId).FirstOrDefault();
-            //    competencyToUpdate.FirstExerciseId = exerciseToDelete.NextExerciseId;
-            //}
-            //else
-            //{
-            //    Exercise ? previousExercise = _context.Exercises.Where(e => e.Id == exerciseToDelete.PreviousExerciseId).FirstOrDefault();
-            //    previousExercise.NextExerciseId = exerciseToDelete.NextExerciseId;
-            //}
             _context.Exercises.Remove(exerciseToDelete);
             _context.SaveChanges();
             return true;
         }
 
-        ////Get next exercise
-        //public Exercise? GetNextExercise(Exercise exercise)
-        //{
-        //    if (exercise == null)
-        //    {
-        //        return null;
-        //    }
-        //    return _context.Exercises.Where(e => e.Id == exercise.NextExerciseId).FirstOrDefault();
-        //}
-
-        //Get exercise by competency
         public List<Exercise> GetExercisesByCompetency(int competencyId, int page, int pageSize)
         {
             return _context.Exercises.Where(e=>e.CompetencyId == competencyId).Include(e => e.Competency).Skip((page - 1) * pageSize).Take(pageSize).ToList();
