@@ -1,5 +1,6 @@
 ﻿using CodePractice.Shared.Interfaces;
 using CodePractice.Shared.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CodePractice.Server.Data.Repos
 {
@@ -13,18 +14,18 @@ namespace CodePractice.Server.Data.Repos
 
         public Competency? GetCompetency(int id)
         {
-            Competency? competency = _context.Competencies.Where(e => e.Id == id).FirstOrDefault();
+            Competency? competency = _context.Competencies.Where(e => e.Id == id).Include(c => c.Exercises).FirstOrDefault();
             return competency;
         }
 
         public List<Competency> GetCompetencies()
         {
-            return _context.Competencies.ToList();
+            return _context.Competencies.Include(c => c.Exercises).ToList();
         }
 
         public List<Competency> GetCompetencies(int page, int number)
         {
-            return _context.Competencies.Skip((page - 1) * number).Take(number).ToList();
+            return _context.Competencies.Include(c => c.Exercises).Skip((page - 1) * number).Take(number).ToList();
         }
 
         public Competency AddCompetency(Competency competency)
@@ -36,13 +37,12 @@ namespace CodePractice.Server.Data.Repos
 
         public Competency? UpdateCompetency(Competency competency)
         {
-            var competencyToUpdate = _context.Competencies.Where(e => e.Id == competency.Id).FirstOrDefault();
+            var competencyToUpdate = _context.Competencies.Include(c => c.Exercises).Where(e => e.Id == competency.Id).FirstOrDefault();
             if (competencyToUpdate != null)
             {
                 competencyToUpdate.Title = competency.Title;
                 competencyToUpdate.Description = competency.Description;
-                competencyToUpdate.FirstExerciseId = competency.FirstExerciseId;
-                competencyToUpdate.LastExerciseId = competency.LastExerciseId;
+                competencyToUpdate.Exercises = competency.Exercises;
                 _context.Competencies.Update(competencyToUpdate);
             }
             _context.SaveChanges();
@@ -51,7 +51,7 @@ namespace CodePractice.Server.Data.Repos
 
         public bool DeleteCompetency(int id)
         {
-            var competencyToDelete = _context.Competencies.Where(e => e.Id == id).FirstOrDefault();
+            var competencyToDelete = _context.Competencies.Include(c => c.Exercises).Where(e => e.Id == id).FirstOrDefault();
             if (competencyToDelete != null)
             {
                 //TODO: Remove exercises from competency
@@ -65,13 +65,15 @@ namespace CodePractice.Server.Data.Repos
             }
         }
 
-        public Exercise GetFirstExercise(int id)
+        public Exercise? GetNextExercise(Competency competency, ApplicationUser user)
         {
-            var competency = _context.Competencies.Where(e => e.Id == id).FirstOrDefault();
-            if (competency != null)
+            var currentCompetency = _context.Competencies.Include(c => c.Exercises).Where(e => e.Id == competency.Id).FirstOrDefault();
+            var exercises = currentCompetency.Exercises;
+            var completeExercises = _context.Submissions.Where(s => s.UserId == user.Id).Select(s => s.ExerciseId).ToList();
+            var incompleteExercises = exercises.Where(e => !completeExercises.Contains(e.Id)).OrderBy(e=>e.Order).ToList();
+            if (incompleteExercises.Count > 0)
             {
-                var exercise = _context.Exercises.Where(e => e.Id == competency.FirstExerciseId).FirstOrDefault();
-                return exercise;
+                return incompleteExercises[0];
             }
             else
             {

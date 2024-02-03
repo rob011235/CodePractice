@@ -9,7 +9,7 @@ namespace CodePractice.Shared.Interfaces
         Exercise? GetExercise(int id);
         List<Exercise> GetExercises(int page, int number);
         Exercise? UpdateExercise(Exercise exercise);
-        public Exercise? GetNextExercise(Exercise exercise);
+        //public Exercise? GetNextExercise(Exercise exercise);
         public List<Exercise> GetExercisesByCompetency(int competencyId, int page, int pageSize);
     }
 }

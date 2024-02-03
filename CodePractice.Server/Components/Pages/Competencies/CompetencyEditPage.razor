@@ -29,7 +29,7 @@ else
         <div class="form-group">
             <div class="card">
                 <div class="card-body">
-                    @if (Exercises?.Count() > 0)
+                    @if (Competency.Exercises?.Count() > 0)
                     {
 
                         <table class="table">
@@ -40,7 +40,7 @@ else
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var exercise in Exercises)
+                                @foreach (var exercise in Competency.Exercises)
                                 {
                                     <tr>
                                         <td>@exercise.Title</td>
@@ -106,8 +106,6 @@ else
     protected int ExerciseId { get; set; }
 
     public Competency? Competency { get; set; }
-
-    public List<Exercise>? Exercises { get; set; } = new List<Exercise>();
 
     override protected void OnInitialized()
     {

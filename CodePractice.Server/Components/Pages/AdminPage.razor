@@ -1,7 +1,7 @@
 ﻿@page "/Admin"
 @rendermode InteractiveServer
 @inject IHttpContextAccessor context
-@inject UserManager<IdentityUser> _UserManager
+@inject UserManager<ApplicationUser> _UserManager
 @inject RoleManager<IdentityRole> _RoleManager
 <h3>Admin Page</h3>
 <table class="table">
@@ -106,7 +106,7 @@
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    string ADMINISTRATION_ROLE = "Administrator";
+    string ADMINISTRATION_ROLE = "Admin";
     System.Security.Claims.ClaimsPrincipal CurrentUser;
     // Property used to add or edit the currently selected user
     IdentityUser objUser = new IdentityUser();
@@ -115,7 +115,7 @@
     // Collection to display the existing users
     List<IdentityUser> ColUsers = new List<IdentityUser>();
     // Options to display in the roles dropdown when editing a user
-    List<string> Options = new List<string>() { "Instructor", "Administrator" };
+    List<string> Options = new List<string>() { "Instructor", "Admin" };
     // To hold any possible errors
     string strError = "";
     // To enable showing the Popup
@@ -240,7 +240,7 @@
             {
                 // Insert new user
                 var NewUser =
-                    new IdentityUser
+                    new ApplicationUser
                         {
                             UserName = objUser.UserName,
                             Email = objUser.Email

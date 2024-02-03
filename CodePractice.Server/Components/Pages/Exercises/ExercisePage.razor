@@ -133,14 +133,14 @@ else
 
     private void OnGetNextProblem()
     {
-        var nextExercise = exercisesRepo.GetNextExercise(exercise);
-        if (nextExercise == null)
-        {            
-            NavigationManager.NavigateTo($"/request-additional-exercises/{exercise.CompetencyId}",true);
-        }
-        else
-        {
-            NavigationManager.NavigateTo($"exercise/{nextExercise.Id}");
-        }
+        // var nextExercise = exercisesRepo.GetNextExercise(exercise);
+        // if (nextExercise == null)
+        // {            
+        //     NavigationManager.NavigateTo($"/request-additional-exercises/{exercise.CompetencyId}",true);
+        // }
+        // else
+        // {
+        //     NavigationManager.NavigateTo($"exercise/{nextExercise.Id}");
+        // }
     }
 }

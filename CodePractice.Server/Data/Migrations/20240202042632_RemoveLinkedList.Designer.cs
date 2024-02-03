@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodePractice.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240126043951_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240202042632_RemoveLinkedList")]
+    partial class RemoveLinkedList
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,6 +82,116 @@ namespace CodePractice.Server.Data.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.Competency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Competencies");
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.Exercise", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("CompetencyId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DesiredOutput")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Hint")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetencyId");
+
+                    b.ToTable("Exercises");
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.FileSubmission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StorageName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("SubmissionId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubmissionId");
+
+                    b.ToTable("FileSubmissions");
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.Submission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ExerciseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("InstructorComments")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool?>("IsCorrect")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StudentComments")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("SubmissionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Submissions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -212,6 +322,22 @@ namespace CodePractice.Server.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CodePractice.Shared.Models.Exercise", b =>
+                {
+                    b.HasOne("CodePractice.Shared.Models.Competency", "Competency")
+                        .WithMany("Exercises")
+                        .HasForeignKey("CompetencyId");
+
+                    b.Navigation("Competency");
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.FileSubmission", b =>
+                {
+                    b.HasOne("CodePractice.Shared.Models.Submission", null)
+                        .WithMany("Files")
+                        .HasForeignKey("SubmissionId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -261,6 +387,16 @@ namespace CodePractice.Server.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.Competency", b =>
+                {
+                    b.Navigation("Exercises");
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.Submission", b =>
+                {
+                    b.Navigation("Files");
                 });
 #pragma warning restore 612, 618
         }

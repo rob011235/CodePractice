@@ -1,6 +1,6 @@
 using CodePractice.Server.Components.Account.Pages;
 using CodePractice.Server.Components.Account.Pages.Manage;
-using CodePractice.Server.Data;
+using CodePractice.Shared.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;

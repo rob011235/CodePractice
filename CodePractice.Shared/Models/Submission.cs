@@ -6,7 +6,8 @@
         public string? Code { get; set; }
         public List<FileSubmission> Files { get; set; } = new List<FileSubmission>();
         public int? ExerciseId { get; set; }
-        public int? UserId { get; set; }
+        public string? UserId { get; set; }
+        public virtual ApplicationUser? User { get; set; }
         public string? UserName { get; set; }
         public DateTime? SubmissionDate { get; set; }
         public bool? IsCorrect { get; set; }

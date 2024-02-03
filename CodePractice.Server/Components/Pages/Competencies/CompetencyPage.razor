@@ -1,6 +1,10 @@
 ﻿@page "/Competency/{Id:int}"
+@using System.Security.Claims
+
 @rendermode InteractiveServer
 @inject ICompetenciesRepo repo
+@inject ApplicationDbContext ApplicationDbContext
+
 <h3>Competency</h3>
 <h4>@Competency?.Title</h4>
 <p>@((MarkupString)Competency.Description)</p>
@@ -14,33 +18,42 @@ else
 {
     <a class="btn btn-primary" href="exercise/@exercise.Id">Try exercise</a>
 }
-@* <ul>
-    @foreach (Exercise exercise in Exercises)
-    {
-        <li><a href="exercise/@exercise.Id">@exercise.Title</a></li>
-    }    
-</ul> *@
-
 
 @code {
+    
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
     [Parameter]
     public int Id { get; set; }
-
     public Competency? Competency { get; set; }
-
-    public List<Exercise> Exercises { get; set; } = new List<Exercise>();
-
     private Exercise? exercise;
+    private ApplicationUser? user = default!;   
 
     override protected void OnInitialized()
     {
         Competency = new Competency();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         base.OnParametersSet();
         Competency = repo.GetCompetency(Id);
-        exercise = repo.GetFirstExercise(Competency.Id);
+        var authState = await authenticationState;
+        user = await GetUser();
+
+        if (user!= null)
+        {
+            exercise = repo.GetNextExercise(Competency, user);
+        }
+    }
+
+    private async Task<ApplicationUser?> GetUser()
+    {
+        var userPrincipal = (await authenticationState).User;
+        var userid = userPrincipal.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        if (!string.IsNullOrEmpty(userid))
+            return ApplicationDbContext.Users.Where(u => u.Id == userid).FirstOrDefault();
+        return null;
     }
 }

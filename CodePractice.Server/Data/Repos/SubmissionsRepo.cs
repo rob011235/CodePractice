@@ -1,6 +1,6 @@
-﻿using CodePractice.Server.Data;
+﻿using CodePractice.Shared.Models;
 using CodePractice.Shared.Interfaces;
-using CodePractice.Shared.Models;
+using CodePractice.Server.Data;
 
 namespace CodePractice.Shared.Repos
 {

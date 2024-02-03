@@ -17,7 +17,7 @@ namespace CodePractice.Server.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
 
-            modelBuilder.Entity("CodePractice.Server.Data.ApplicationUser", b =>
+            modelBuilder.Entity("CodePractice.Shared.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -90,12 +90,6 @@ namespace CodePractice.Server.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("FirstExerciseId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("LastExerciseId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
@@ -125,10 +119,7 @@ namespace CodePractice.Server.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("NextExerciseId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("PreviousExerciseId")
+                    b.Property<int>("Order")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Question")
@@ -192,13 +183,15 @@ namespace CodePractice.Server.Data.Migrations
                     b.Property<DateTime?>("SubmissionDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Submissions");
                 });
@@ -334,7 +327,7 @@ namespace CodePractice.Server.Data.Migrations
             modelBuilder.Entity("CodePractice.Shared.Models.Exercise", b =>
                 {
                     b.HasOne("CodePractice.Shared.Models.Competency", "Competency")
-                        .WithMany()
+                        .WithMany("Exercises")
                         .HasForeignKey("CompetencyId");
 
                     b.Navigation("Competency");
@@ -345,6 +338,15 @@ namespace CodePractice.Server.Data.Migrations
                     b.HasOne("CodePractice.Shared.Models.Submission", null)
                         .WithMany("Files")
                         .HasForeignKey("SubmissionId");
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.Submission", b =>
+                {
+                    b.HasOne("CodePractice.Shared.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -358,7 +360,7 @@ namespace CodePractice.Server.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("CodePractice.Server.Data.ApplicationUser", null)
+                    b.HasOne("CodePractice.Shared.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -367,7 +369,7 @@ namespace CodePractice.Server.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("CodePractice.Server.Data.ApplicationUser", null)
+                    b.HasOne("CodePractice.Shared.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -382,7 +384,7 @@ namespace CodePractice.Server.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CodePractice.Server.Data.ApplicationUser", null)
+                    b.HasOne("CodePractice.Shared.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -391,11 +393,16 @@ namespace CodePractice.Server.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("CodePractice.Server.Data.ApplicationUser", null)
+                    b.HasOne("CodePractice.Shared.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CodePractice.Shared.Models.Competency", b =>
+                {
+                    b.Navigation("Exercises");
                 });
 
             modelBuilder.Entity("CodePractice.Shared.Models.Submission", b =>

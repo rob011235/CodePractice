@@ -1,6 +1,6 @@
-﻿using CodePractice.Server.Data;
+﻿using CodePractice.Shared.Models;
 using CodePractice.Shared.Interfaces;
-using CodePractice.Shared.Models;
+using CodePractice.Server.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodePractice.Data.Repos
@@ -28,20 +28,20 @@ namespace CodePractice.Data.Repos
             var returnExercise = _context.Exercises.Add(exercise);
             var competencyToUpdate = _context.Competencies.Where(e => e.Id == returnExercise.Entity.CompetencyId).FirstOrDefault();
 
-            if (competencyToUpdate != null)
-            {
-                Exercise lastExercise = _context.Exercises.Where(e => e.Id == competencyToUpdate.LastExerciseId).FirstOrDefault();
+            //if (competencyToUpdate != null)
+            //{
+            //    Exercise lastExercise = _context.Exercises.Where(e => e.Id == competencyToUpdate.LastExerciseId).FirstOrDefault();
 
-                if (lastExercise != null)
-                {
-                    lastExercise.NextExerciseId = returnExercise.Entity.Id;
-                }
-                else
-                {
-                    competencyToUpdate.FirstExerciseId = returnExercise.Entity.Id;
-                }
-                //TODO: Make sure returnExercise.Entity.Id is not null
-            }
+            //    if (lastExercise != null)
+            //    {
+            //        lastExercise.NextExerciseId = returnExercise.Entity.Id;
+            //    }
+            //    else
+            //    {
+            //        competencyToUpdate.FirstExerciseId = returnExercise.Entity.Id;
+            //    }
+            //    //TODO: Make sure returnExercise.Entity.Id is not null
+            //}
             _context.SaveChanges();
             return returnExercise.Entity;
         }
@@ -57,32 +57,7 @@ namespace CodePractice.Data.Repos
                 exerciseToUpdate.DesiredOutput = exercise.DesiredOutput;
                 exerciseToUpdate.Answer = exercise.Answer;
                 exerciseToUpdate.Hint = exercise.Hint;
-                if (exerciseToUpdate.CompetencyId != exercise.CompetencyId)
-                {
-                    //Is this the first exercise in the competency?
-                    if (exerciseToUpdate.PreviousExerciseId == null)
-                    {
-                        //Set new competency's first exercise to this exercise's next exercise
-                        previousCompetency.FirstExerciseId = exerciseToUpdate.NextExerciseId;
-                    }
-                    else //This is not the first exercise in the competency
-                    {
-                        //Set previous exercise's next exercise to this exercise's next exercise
-                        Exercise previousExercise = _context.Exercises.Where(e => e.Id == exerciseToUpdate.PreviousExerciseId).FirstOrDefault();
-                        if (previousExercise != null)
-                        {
-                            previousExercise.NextExerciseId = exerciseToUpdate.NextExerciseId;
-                        }
-                        
-                    }
-                    //Set new competency
-                    exerciseToUpdate.CompetencyId = exercise.CompetencyId;
-                    //place new exercise at end of new competency
-                    Competency? newCompetency = _context.Competencies.Where(c => c.Id == exercise.CompetencyId).FirstOrDefault();
-                    Exercise? lastExercise = _context.Exercises.Where(e => e.Id == newCompetency.LastExerciseId).FirstOrDefault();
-                    lastExercise.NextExerciseId = exerciseToUpdate.Id;
-                    newCompetency.LastExerciseId = exerciseToUpdate.Id;
-                }
+                exerciseToUpdate.CompetencyId = exercise.CompetencyId;
             }
             _context.SaveChanges();
             return exerciseToUpdate;
@@ -95,31 +70,31 @@ namespace CodePractice.Data.Repos
             {
                 return false;
             }
-            //Reorder exercises in competency
-            if (exerciseToDelete.PreviousExerciseId == null)
-            {
-                Competency? competencyToUpdate = _context.Competencies.Where(c => c.Id == exerciseToDelete.CompetencyId).FirstOrDefault();
-                competencyToUpdate.FirstExerciseId = exerciseToDelete.NextExerciseId;
-            }
-            else
-            {
-                Exercise ? previousExercise = _context.Exercises.Where(e => e.Id == exerciseToDelete.PreviousExerciseId).FirstOrDefault();
-                previousExercise.NextExerciseId = exerciseToDelete.NextExerciseId;
-            }
+            ////Reorder exercises in competency
+            //if (exerciseToDelete.PreviousExerciseId == null)
+            //{
+            //    Competency? competencyToUpdate = _context.Competencies.Where(c => c.Id == exerciseToDelete.CompetencyId).FirstOrDefault();
+            //    competencyToUpdate.FirstExerciseId = exerciseToDelete.NextExerciseId;
+            //}
+            //else
+            //{
+            //    Exercise ? previousExercise = _context.Exercises.Where(e => e.Id == exerciseToDelete.PreviousExerciseId).FirstOrDefault();
+            //    previousExercise.NextExerciseId = exerciseToDelete.NextExerciseId;
+            //}
             _context.Exercises.Remove(exerciseToDelete);
             _context.SaveChanges();
             return true;
         }
 
-        //Get next exercise
-        public Exercise? GetNextExercise(Exercise exercise)
-        {
-            if (exercise == null)
-            {
-                return null;
-            }
-            return _context.Exercises.Where(e => e.Id == exercise.NextExerciseId).FirstOrDefault();
-        }
+        ////Get next exercise
+        //public Exercise? GetNextExercise(Exercise exercise)
+        //{
+        //    if (exercise == null)
+        //    {
+        //        return null;
+        //    }
+        //    return _context.Exercises.Where(e => e.Id == exercise.NextExerciseId).FirstOrDefault();
+        //}
 
         //Get exercise by competency
         public List<Exercise> GetExercisesByCompetency(int competencyId, int page, int pageSize)

@@ -1,4 +1,4 @@
-﻿using CodePractice.Server.Data;
+﻿using CodePractice.Shared.Models;
 using CodePractice.Shared.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
