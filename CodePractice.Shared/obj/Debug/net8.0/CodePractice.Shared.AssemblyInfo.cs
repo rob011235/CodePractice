@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CodePractice.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+92d0aa06b71bf3e6b27b99e754b24cc89ab7a68c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+06c02fa373b4864f2d85c66a162d83d06da68490")]
 [assembly: System.Reflection.AssemblyProductAttribute("CodePractice.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CodePractice.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
