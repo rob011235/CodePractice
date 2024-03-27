@@ -6,8 +6,8 @@ C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\ob
 C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\CodePractice.Shared.AssemblyInfoInputs.cache
 C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\CodePractice.Shared.AssemblyInfo.cs
 C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\CodePractice.Shared.csproj.CoreCompileInputs.cache
+C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\CodePractice.Shared.sourcelink.json
 C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\CodePractice.Shared.dll
 C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\refint\CodePractice.Shared.dll
 C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\CodePractice.Shared.pdb
 C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\ref\CodePractice.Shared.dll
-C:\Users\rgarn\source\repos\CodePracticeNet8\CodePractice\CodePractice.Shared\obj\Debug\net8.0\CodePractice.Shared.sourcelink.json

@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "CodePractice.Client",
   "resources": {
-    "hash": "sha256-THAIZoYQIehx1vfe2ZMcizW5P+xSI9+Zdp8prKvNT1Y=",
+    "hash": "sha256-rW+wKJxrsIsjSvXD1buO90O4hJ849cfzFspUctja3Zw=",
     "jsModuleNative": {
       "dotnet.native.8.0.3.bxik76cwrj.js": "sha256-D4sYBYmDfH/YekgYRgX959/2RG6k28sJSHmcsn+iikk="
     },
@@ -210,10 +210,10 @@
       "mscorlib.wasm": "sha256-/xjZuJwCmantx5vGyH5ZZ8keySSTeu+YHKQRJbZzcuM=",
       "netstandard.wasm": "sha256-vuFKmCGJbyv85DrzI6S1ZvCikuhIllH6hqbXIL+fUAA=",
       "System.Private.CoreLib.wasm": "sha256-SZkozEDkHEFN0VaDmhl2HOenGaqTOmHqEGkraz3Aejc=",
-      "CodePractice.Client.wasm": "sha256-eTnE0xvo1fkKGzkiByJUmAtD7n+N2YlILjGxBlrHZ1c="
+      "CodePractice.Client.wasm": "sha256-W/QqSqNY24DHpws3d5JuaUyfY0u7pr4+eLJZuJ/5ZIE="
     },
     "pdb": {
-      "CodePractice.Client.pdb": "sha256-T70uEhxawXnebzFlxI20K5lvtG45/XA+nkKs5haAyCA="
+      "CodePractice.Client.pdb": "sha256-SucFQmMY/K2pJ+M6U0jiAl8O693lrHPF5SbC91ia7YE="
     }
   },
   "cacheBootResources": true,

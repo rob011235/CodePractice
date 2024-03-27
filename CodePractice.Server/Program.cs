@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CodePractice.Server.Data;
+using CodePractice.Server.HelperClasses;
 
 namespace CodePractice.Server
 {
@@ -121,7 +122,10 @@ namespace CodePractice.Server
             // Add additional endpoints required by the Identity /Account Razor components.
             app.MapAdditionalIdentityEndpoints();
 
+            app.ApplyMigrations();
             app.Run();
         }
+
+
     }
 }
