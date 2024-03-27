@@ -1,0 +1,187 @@
+﻿@page "/exercise/{id:int}"
+@rendermode InteractiveServer
+@inject IExercisesRepo exercisesRepo;
+@inject ICompetenciesRepo competenciesRepo;
+@inject ISubmissionsRepo submissionsRepo;
+@inject IUsersRepo usersRepo;
+@inject IWebHostEnvironment Environment;
+
+@inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthStateProvider;
+
+@if (exercise == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="form-group">
+        <h3>@exercise.Title</h3>
+    </div>
+    <div class="form-group">
+        <h4>Coding problem</h4>
+        <small class="form-text text-muted">Solve this problem with your code.</small>
+        <p>@((MarkupString)exercise.Question)</p>
+    </div>
+    <div class="form-group">
+        <h4>Desired Output</h4>
+        <small class="form-text text-muted">You program should display the folloiwng output.</small>
+        <p>
+            <code>
+                @((MarkupString)exercise.DesiredOutput)
+            </code>
+        </p>
+    </div>
+    <AuthorizeView>
+        <Authorized>
+            <div class="form-group">
+                <h4>Your Code</h4>
+
+                <small class="form-text text-muted">Once your program solves the problem and shows the desired output, upload it here for you instructor to look at latter.</small>
+            </div>
+
+            @if (!showAnswer)
+            {
+                <div class="form-group">
+                    <label>Submit as file</label>
+                    <InputCheckbox @bind-Value="submitAsFile"></InputCheckbox>
+                    <small>Use for larger programs or programs with multiple files.</small>
+                </div>
+                <div class="form-group">
+                    @if (submitAsFile)
+                    {
+                        <small class="form-text text-muted">Zip all your files into a single zip file and upload it here.</small>
+                        <InputFile class="form-control" OnChange="OnFileChangeAsync" />
+                    }
+                    else
+                    {
+                        <small class="form-text text-muted">Copy and paste your code into the text area below.</small>
+                        <InputTextArea class="form-control" @bind-Value="submission.Code" />
+                    }
+                </div>
+
+                <div class="form-group">
+                    <h4>Submission Comments</h4>
+                    <small class="form-text text-muted">Enter any comments or questions you want your instructor to see here.</small>
+                    <InputTextArea class="form-control" @bind-Value="submission.StudentComments" />
+                </div>
+                
+            }
+
+            @if (showAnswer)
+            {
+                <div class="form-group">
+                    @if (submitAsFile)
+                    {
+                        <p>Submitted as a file: @SubmittedFileName.</p>
+                    }
+                    else
+                    {
+                        <p>@submission.Code</p>
+                    }
+                </div>
+                <div class="form-group">
+                    <h4>Answer</h4>
+                    <small class="form-text text-muted">Once you see the answer you can't make any more submissions on this problem but don't worry! You can just try another problem until you get it right.</small>
+                    <p>@((MarkupString)@exercise.Answer)</p>
+                </div>
+                <div class="form-group">
+                    <h4>Submission Comments</h4>
+                    <p>@submission.StudentComments</p>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" @onclick="OnReturnClick">Return to competency page</button>
+                    <button class="btn btn-primary" @onclick="OnGetNextProblem">Try another problem</button>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <button class="btn btn-primary" @onclick="OnShowAnswerClick">Submit Program and Show Answer</button>
+                    <button class="btn btn-danger" @onclick="OnReturnClick">Return to Competency Page</button>
+                </div>
+            }
+            
+        </Authorized>
+        <NotAuthorized>
+            Login to submit your answer.
+        </NotAuthorized>
+    </AuthorizeView>
+    
+}
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public Exercise exercise { get; set; }
+    public Submission? submission { get; set; } = new Submission();
+    string SubmittedFileName { get; set; }
+    bool showAnswer = false;
+    bool submitAsFile = false;
+    IBrowserFile submissionFile;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        submission = new Submission();
+        SubmittedFileName = null;
+        showAnswer = false;
+        submitAsFile = false;
+        exercise = exercisesRepo.GetExercise(Id);
+    }
+
+    private void OnReturnClick()
+    {
+        NavigationManager.NavigateTo($"competency/{exercise.CompetencyId}");
+    }
+
+    private async void OnShowAnswerClick()
+    {
+        showAnswer = true;
+        if(submission != null)
+        {
+            if(submitAsFile)
+            {
+                SubmittedFileName = submissionFile.Name;
+                var path = Path.Combine(Environment.WebRootPath, "FileSubmisssions", Guid.NewGuid().ToString());
+                await using FileStream fs = new(path, FileMode.Create);
+                await submissionFile.OpenReadStream().CopyToAsync(fs);
+            }          
+
+            submission.ExerciseId = exercise.Id;
+            var authState = AuthStateProvider.GetAuthenticationStateAsync();
+            submission.User = await usersRepo.GetUserAsync();
+            submission.UserId = submission.User?.Id;
+            submission.SubmissionDate = DateTime.Now;
+            submissionsRepo.AddSubmission(submission);
+        }
+        else
+        {
+            //TODO: handle null submission.
+        }
+
+    }
+
+    private async Task OnFileChangeAsync(InputFileChangeEventArgs e)
+    {
+        submissionFile = e.File;
+    }
+
+    private async Task OnGetNextProblem()
+    {
+        var user = await usersRepo.GetUserAsync();
+        if (user == null)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+        var nextExercise = competenciesRepo.GetNextExercise(exercise.Competency,user);
+        if (nextExercise == null)
+        {            
+            NavigationManager.NavigateTo($"/request-additional-exercises/{exercise.CompetencyId}",true);
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"exercise/{nextExercise.Id}");
+        }
+    }
+}

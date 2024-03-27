@@ -1,0 +1,90 @@
+﻿@page "/Competency/{Id:int}"
+@using System.Security.Claims
+
+@rendermode InteractiveServer
+@inject ICompetenciesRepo repo
+@inject ApplicationDbContext ApplicationDbContext
+
+<h3>Competency</h3>
+<h4>@Competency?.Title</h4>
+<p>@((MarkupString)Competency.Description)</p>
+
+<h5>Exercises</h5>
+@if (Competency.Exercises == null)
+{
+    <p>No exercises found</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Submited</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Competency.Exercises)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <AuthorizeView>
+        <Authorized>
+            @if (nextExercise != null)
+            {
+                <a class="btn btn-primary" href="exercise/@nextExercise.Id">Try exercise</a>
+            }
+            else
+            {
+                <p>There are no further exercises in this competency.</p>
+            }
+        </Authorized>
+        <NotAuthorized>
+            <p>You need to be logged in to try exercises.</p>
+
+        </NotAuthorized>
+    </AuthorizeView>
+}
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+    public Competency? Competency { get; set; }
+    private Exercise? nextExercise;
+    private ApplicationUser? user = default!;
+
+    override protected void OnInitialized()
+    {
+        Competency = new Competency();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        base.OnParametersSet();
+        Competency = repo.GetCompetency(Id);
+        var authState = await authenticationState;
+        user = await GetUser();
+
+        if (user != null)
+        {
+            nextExercise = repo.GetNextExercise(Competency, user);
+        }
+    }
+
+    private async Task<ApplicationUser?> GetUser()
+    {
+        var userPrincipal = (await authenticationState).User;
+        var userid = userPrincipal.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        if (!string.IsNullOrEmpty(userid))
+            return ApplicationDbContext.Users.Where(u => u.Id == userid).FirstOrDefault();
+        return null;
+    }
+}

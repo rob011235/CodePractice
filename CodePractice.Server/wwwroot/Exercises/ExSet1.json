@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "Print your name to the console.",
+      "answer": "print(\"Your Name\")"
+    },
+    {
+      "question": "Print the result of adding 5 and 7.",
+      "answer": "print(5 + 7)"
+    },
+    {
+      "question": "Print three variables: name, age, and city.",
+      "answer": "name = 'John'\nage = 25\ncity = 'New York'\nprint(name, age, city)"
+    },
+    {
+      "question": "Print a message welcoming the user with their entered name.",
+      "answer": "user_name = input('Enter your name: ')\nprint('Welcome, ' + user_name + '!'')"
+    },
+    {
+      "question": "Print the area of a rectangle with length 10 and width 5.",
+      "answer": "length = 10\nwidth = 5\narea = length * width\nprint('Area of the rectangle:', area)"
+    },
+    {
+      "question": "Print the result of 18 divided by 3.",
+      "answer": "print(18 / 3)"
+    },
+    {
+      "question": "Print the square of the number 9.",
+      "answer": "print(9 ** 2)"
+    },
+    {
+      "question": "Print a message using both single and double quotes.",
+      "answer": "print('This is a message with single quotes and \"double quotes\".')"
+    },
+    {
+      "question": "Print your age as a string.",
+      "answer": "age = 25\nprint('My age is ' + str(age))"
+    },
+    {
+      "question": "Print a pattern of three lines using three print statements.",
+      "answer": "print('Line 1')\nprint('Line 2')\nprint('Line 3')"
+    }
+  ]
+}
