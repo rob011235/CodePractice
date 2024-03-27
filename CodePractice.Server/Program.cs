@@ -52,7 +52,7 @@ namespace CodePractice.Server
             builder.Services.AddTransient<ICompetenciesRepo, CompetenciesRepo>();
             builder.Services.AddTransient<IInstructorsRepo, InstructorsRepo>();
             builder.Services.AddTransient<ISubmissionsRepo, SubmissionsRepo>();
-
+            builder.Services.AddTransient<IUsersRepo, UsersRepo>();
             var app = builder.Build();
 
 

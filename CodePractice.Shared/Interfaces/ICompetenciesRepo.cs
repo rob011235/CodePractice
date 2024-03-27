@@ -11,5 +11,6 @@ namespace CodePractice.Shared.Interfaces
         Competency AddCompetency(Competency competency);
         bool DeleteCompetency(int id);
         Exercise? GetNextExercise(Competency competency, ApplicationUser user);
+        Task<List<Submission>> GetUserExerciseSubmissionsAsync(Competency competency, ApplicationUser user);
     }
 }

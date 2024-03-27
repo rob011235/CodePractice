@@ -3,6 +3,9 @@
 @inject IExercisesRepo exercisesRepo;
 @inject ICompetenciesRepo competenciesRepo;
 @inject ISubmissionsRepo submissionsRepo;
+@inject IUsersRepo usersRepo;
+@inject IWebHostEnvironment Environment;
+
 @inject NavigationManager NavigationManager;
 @inject AuthenticationStateProvider AuthStateProvider;
 
@@ -48,7 +51,7 @@ else
                     @if (submitAsFile)
                     {
                         <small class="form-text text-muted">Zip all your files into a single zip file and upload it here.</small>
-                        <InputFile class="form-control" OnChange="OnFileChange" />
+                        <InputFile class="form-control" OnChange="OnFileChangeAsync" />
                     }
                     else
                     {
@@ -109,11 +112,13 @@ else
 @code {
     [Parameter]
     public int Id { get; set; }
-    public Exercise? exercise { get; set; }
+    public Exercise exercise { get; set; }
     public Submission? submission { get; set; } = new Submission();
     string SubmittedFileName { get; set; }
     bool showAnswer = false;
     bool submitAsFile = false;
+    IBrowserFile submissionFile;
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -129,25 +134,46 @@ else
         NavigationManager.NavigateTo($"competency/{exercise.CompetencyId}");
     }
 
-    private void OnShowAnswerClick()
+    private async void OnShowAnswerClick()
     {
         showAnswer = true;
-        submission.ExerciseId = exercise.Id;
-        var authState = AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.Result.User;
-        submission.UserName = user?.Identity?.Name;
-        submission.SubmissionDate = DateTime.Now;
-        submissionsRepo.AddSubmission(submission);
+        if(submission != null)
+        {
+            if(submitAsFile)
+            {
+                SubmittedFileName = submissionFile.Name;
+                var path = Path.Combine(Environment.WebRootPath, "FileSubmisssions", Guid.NewGuid().ToString());
+                await using FileStream fs = new(path, FileMode.Create);
+                await submissionFile.OpenReadStream().CopyToAsync(fs);
+            }          
+
+            submission.ExerciseId = exercise.Id;
+            var authState = AuthStateProvider.GetAuthenticationStateAsync();
+            submission.User = await usersRepo.GetUserAsync();
+            submission.UserId = submission.User?.Id;
+            submission.SubmissionDate = DateTime.Now;
+            submissionsRepo.AddSubmission(submission);
+        }
+        else
+        {
+            //TODO: handle null submission.
+        }
 
     }
-    private void OnFileChange(InputFileChangeEventArgs e)
+
+    private async Task OnFileChangeAsync(InputFileChangeEventArgs e)
     {
-        var file = e.File;
-        SubmittedFileName = file.Name;
+        submissionFile = e.File;
     }
 
-    private void OnGetNextProblem()
+    private async Task OnGetNextProblem()
     {
+        var user = await usersRepo.GetUserAsync();
+        if (user == null)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
         var nextExercise = competenciesRepo.GetNextExercise(exercise.Competency,user);
         if (nextExercise == null)
         {            

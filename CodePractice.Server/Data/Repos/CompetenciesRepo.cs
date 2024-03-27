@@ -14,7 +14,7 @@ namespace CodePractice.Server.Data.Repos
 
         public Competency? GetCompetency(int id)
         {
-            Competency? competency = _context.Competencies.Where(e => e.Id == id).Include(c => c.Exercises).FirstOrDefault();
+            Competency? competency = _context.Competencies.Include(c=>c.Exercises).Where(e => e.Id == id).Include(c => c.Exercises).FirstOrDefault();
             return competency;
         }
 
@@ -79,6 +79,11 @@ namespace CodePractice.Server.Data.Repos
             {
                 return null;
             }
+        }
+
+        public Task<List<Submission>> GetUserExerciseSubmissionsAsync(Competency competency, ApplicationUser user)
+        {
+            return _context.Submissions.Where(s => competency.Exercises.Contains(s.Exercise) && s.User == user).ToListAsync();
         }
     }
 }

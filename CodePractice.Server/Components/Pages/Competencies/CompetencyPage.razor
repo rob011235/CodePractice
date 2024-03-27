@@ -10,25 +10,56 @@
 <p>@((MarkupString)Competency.Description)</p>
 
 <h5>Exercises</h5>
-@if(exercise == null)
+@if (Competency.Exercises == null)
 {
     <p>No exercises found</p>
 }
 else
 {
-    <a class="btn btn-primary" href="exercise/@exercise.Id">Try exercise</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Submited</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Competency.Exercises)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <AuthorizeView>
+        <Authorized>
+            @if (nextExercise != null)
+            {
+                <a class="btn btn-primary" href="exercise/@nextExercise.Id">Try exercise</a>
+            }
+            else
+            {
+                <p>There are no further exercises in this competency.</p>
+            }
+        </Authorized>
+        <NotAuthorized>
+            <p>You need to be logged in to try exercises.</p>
+
+        </NotAuthorized>
+    </AuthorizeView>
 }
 
 @code {
-    
+
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
 
     [Parameter]
     public int Id { get; set; }
     public Competency? Competency { get; set; }
-    private Exercise? exercise;
-    private ApplicationUser? user = default!;   
+    private Exercise? nextExercise;
+    private ApplicationUser? user = default!;
 
     override protected void OnInitialized()
     {
@@ -42,9 +73,9 @@ else
         var authState = await authenticationState;
         user = await GetUser();
 
-        if (user!= null)
+        if (user != null)
         {
-            exercise = repo.GetNextExercise(Competency, user);
+            nextExercise = repo.GetNextExercise(Competency, user);
         }
     }
 

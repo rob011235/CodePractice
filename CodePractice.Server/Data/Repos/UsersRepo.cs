@@ -16,7 +16,7 @@ namespace CodePractice.Server.Data.Repos
             _authenticationStateProvider = authenticationStateProvider;
         }
 
-        private async Task<ApplicationUser?> GetUser()
+        public async Task<ApplicationUser?> GetUserAsync()
         {
             var userPrincipal = (await authenticationState).User;
             var userid = userPrincipal.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;

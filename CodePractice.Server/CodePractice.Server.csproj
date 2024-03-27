@@ -20,6 +20,7 @@
   <ItemGroup>
     <Folder Include="Components\Pages\Exercises\" />
     <Folder Include="Data\Migrations\" />
+    <Folder Include="wwwroot\FileSubmissions\" />
   </ItemGroup>
 
 </Project>
